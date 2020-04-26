@@ -5,16 +5,16 @@ const {
     GraphQLList,
 } = graphql;
 
-const Job =  {
-    StatusType :  new GraphQLObjectType ({
-        name : 'Status',
-        fields : () => ({
-            username : {type: GraphQLString},
-            applicationdate : {type: GraphQLString},
-            status : {type: GraphQLString}
-        })
-    }),
+const JobStatusType =  new GraphQLObjectType ({
+    name : 'JobStatus',
+    fields : () => ({
+        username : {type: GraphQLString},
+        applicationdate : {type: GraphQLString},
+        status : {type: GraphQLString}
+    })
+});
 
+const Job =  {
     JobType : new GraphQLObjectType({
         name: 'Job',
         fields: () => ({
@@ -27,13 +27,12 @@ const Job =  {
             type :  {type: GraphQLString},
             createdby : {type: GraphQLString},
             username : {type: GraphQLString},
-            // username/id of students applied
             studentsapplied : {
-                type : new GraphQLList(StatusType),
+                type : new GraphQLList(JobStatusType),
                 resolve(parent, args) {
-                    parent.studentsapplied;
+                    return parent.studentsapplied;
                 }
-            }   
+            }
         })
     })
 }

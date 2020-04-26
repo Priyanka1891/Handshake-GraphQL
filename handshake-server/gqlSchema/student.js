@@ -49,7 +49,7 @@ const StudentDetail = {
         name: 'User',
         fields: () => ({
             username: { type: GraphQLString },
-            email_id: { type: GraphQLString },
+            email: { type: GraphQLString },
             password: { type: GraphQLString },
             basicDetails : { type : BasicDetailsType},
             studentEducation : {

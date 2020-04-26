@@ -1,6 +1,14 @@
 const graphql = require('graphql');
 const {UserType} = require('./student');
-const {Users} = require("../dbSchema/UserModel");
+const {EmployerType} = require('./employer')
+const {JobType} = require('./job');
+
+const {EventType} = require('./event');
+const {Users} = require('../dbSchema/UserModel');
+const {Employers} = require ('../dbSchema/EmployerModel');
+const {Jobs} = require('../dbSchema/JobModel');
+const {Events} = require('../dbSchema/EventModel');
+
 
 
 const {
@@ -23,7 +31,7 @@ const StatusType = new GraphQLObjectType({
 const RootQuery = new GraphQLObjectType({
     name: 'RootQueryType',
     fields: {
-        student: {
+        student : {
             type: UserType,
             args: { username: { type: GraphQLString } },
             async resolve(parent, args) {
@@ -33,16 +41,38 @@ const RootQuery = new GraphQLObjectType({
                 }
             }
         },
-        // owner: {
-        //     type: UserType,
-        //     args: { user_id: { type: GraphQLString } },
-        //     async resolve(parent, args) {
-        //         let user = await Users.findById(args.user_id);
-        //         if (user) {
-        //             return user;
-        //         }
-        //     }
-        // },
+        employer : {
+            type: EmployerType,
+            args: { username: { type: GraphQLString } },
+            async resolve(parent, args) {
+                let user = await Employers.findOne({username : args.username});
+                if (user) {
+                    return user;
+                }
+            }
+        },
+
+        jobs : {
+            type : new GraphQLList(JobType),
+            args : {createdby : {type: GraphQLString}},
+            async resolve(parent, args) {
+                let jobs = await Jobs.find({createdby: args.createdby});
+                if (jobs) {
+                    return jobs;
+                }
+            }
+        },
+
+        events : {
+            type : new GraphQLList(EventType),
+            args : {createdby :  {type: GraphQLString}},
+            async resolve(parent, args) {
+                let events =  await Events.find({createdby: args.createdby});
+                if (events) {
+                    return events;
+                }
+            }
+        }
         // menu: {
         //     type: new GraphQLList(MenuSectionType),
         //     args: { user_id: { type: GraphQLString } },
