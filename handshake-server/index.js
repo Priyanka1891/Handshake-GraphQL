@@ -1,6 +1,6 @@
 const express = require('express');
 const graphqlHTTP = require('express-graphql');
-const schema = require('./schema/schema');
+const schema = require('./gqlSchema/schema');
 const cors = require('cors');
 const app = express();
 const mongoose = require('mongoose');
@@ -20,8 +20,6 @@ app.use(function(req, res, next) {
 var options = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  reconnectTries: Number.MAX_VALUE,
-  reconnectInterval: 500, // Reconnect every 500ms
   poolSize: 500,
   bufferMaxEntries: 0
 };
