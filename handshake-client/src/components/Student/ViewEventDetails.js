@@ -3,7 +3,7 @@ import StudentNavbar from './StudentNavbar';
 import axios from 'axios';
 import {Redirect} from 'react-router';
 import {connect} from 'react-redux';
-import { backendURL } from   "../../Utils/config"
+import { backendURL } from   "../../config"
 
 
 const initialState={

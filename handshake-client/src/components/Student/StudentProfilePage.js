@@ -7,10 +7,8 @@ import EmployerNavbar from '../Employer/EmployerNavbar'
 import Details from './Details';
 import Education from './Education';
 import Experience from './Experience';
-import Resume from './Resume';
-import MessageApp from '../Message/MessageApp';
-import { fillStudentDetails } from "../../common_store/actions/login";
-import { backendURL } from   "../../Utils/config"
+// import { fillStudentDetails } from "../../common_store/actions/login";
+import { backendURL } from   "../../config"
 
 
 const initialState={
@@ -196,10 +194,7 @@ class StudentProfilePage extends Component {
                   }
                 </div>
                 <br/>
-                <div id="Resume"><Resume enableapply = {this.enableApply}/></div></div> 
-                <div className="col-md-offset-5">
-                  {this.state.openMessageBox ? <div style={{"height" : "40%", "width" : "40%"}}><MessageApp closeMessageBox = {this.closeMessageBox}/> </div> : <div/> }
-                </div>
+                </div> 
               </div>
             </div>
           </div>
@@ -218,7 +213,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    fillStudentDetails : (details) => dispatch(fillStudentDetails(details))
+    // fillStudentDetails : (details) => dispatch(fillStudentDetails(details))
   }
 }
 

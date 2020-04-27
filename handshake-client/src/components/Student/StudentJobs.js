@@ -3,8 +3,8 @@ import StudentNavbar from './StudentNavbar';
 import {connect} from 'react-redux';
 import axios from 'axios';
 import JobResultPage from './JobResultPage';
-import { fillJobDetailsList} from '../../common_store/actions/job'
-import { backendURL } from   "../../Utils/config"
+// import { fillJobDetailsList} from '../../common_store/actions/job'
+import { backendURL } from   "../../config"
 
 
 const initialState={
@@ -262,7 +262,7 @@ class StudentJobs extends Component {
 
 function mapDispatchToProps(dispatch) {
   return {
-    fillJobDetailsList : (details) => dispatch(fillJobDetailsList(details))
+    // fillJobDetailsList : (details) => dispatch(fillJobDetailsList(details))
   }
 }
 

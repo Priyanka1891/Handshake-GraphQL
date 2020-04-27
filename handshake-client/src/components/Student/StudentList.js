@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import StudentNavbar from './StudentNavbar';
 import axios from 'axios';
 import SearchedStudentResultPage from './SearchedStudentResultPage';
-import { backendURL } from   "../../Utils/config"
+import { backendURL } from   "../../config"
 
 
 

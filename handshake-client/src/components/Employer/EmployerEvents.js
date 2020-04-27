@@ -4,9 +4,7 @@ import axios from 'axios';
 import {connect} from 'react-redux';
 import EventResultPage from './EventResultPage';
 import {Redirect} from 'react-router';
-import { fillBothDetails } from "../../common_store/actions/login";
-import { fillEventDetailsList } from '../../common_store/actions/event'
-import { backendURL } from   "../../Utils/config"
+import { backendURL } from   "../../config"
 
 
 
@@ -105,8 +103,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    fillBothDetails : (details) => dispatch(fillBothDetails(details)),
-    fillEventDetailsList : (details) => dispatch(fillEventDetailsList(details))
+    // fillBothDetails : (details) => dispatch(fillBothDetails(details)),
+    // fillEventDetailsList : (details) => dispatch(fillEventDetailsList(details))
   }
 }
 

@@ -3,7 +3,7 @@ import StudentNavbar from './StudentNavbar';
 import axios from 'axios';
 import {connect} from 'react-redux';
 import JobApplicationResultPage from './JobApplicationResultPage';
-import { backendURL } from   "../../Utils/config"
+import { backendURL } from   "../../config"
 
 
 

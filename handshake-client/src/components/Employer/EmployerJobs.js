@@ -4,9 +4,9 @@ import axios from 'axios';
 import {connect} from 'react-redux';
 import JobResultPage from './JobResultPage';
 import {Redirect} from 'react-router';
-import { fillBothDetails } from "../../common_store/actions/login";
-import { fillJobDetailsList } from '../../common_store/actions/job'
-import { backendURL } from   "../../Utils/config"
+// import { fillBothDetails } from "../../common_store/actions/login";
+// import { fillJobDetailsList } from '../../common_store/actions/job'
+import { backendURL } from   "../../config"
 
 
 
@@ -106,8 +106,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    fillBothDetails : (details) => dispatch(fillBothDetails(details)),
-    fillJobDetailsList : (details) => dispatch(fillJobDetailsList(details))
+    // fillBothDetails : (details) => dispatch(fillBothDetails(details)),
+    // fillJobDetailsList : (details) => dispatch(fillJobDetailsList(details))
   }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(EmployerJobs);

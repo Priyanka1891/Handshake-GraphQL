@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Redirect} from 'react-router';
 import {connect} from 'react-redux';
 import axios from 'axios';
-import { backendURL } from   "../../Utils/config"
+import { backendURL } from   "../../config"
 
 
 const initialState={

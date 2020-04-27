@@ -17,7 +17,6 @@ import StudentList from './Student/StudentList';
 import ViewEventDetails from './Student/ViewEventDetails';
 import ViewJobDetails from './Student/ViewJobDetails';
 import StudentApplications from './Student/StudentApplications';
-import Wallet from './Amazon/Wallet';
 
 
 
@@ -29,7 +28,6 @@ import EmployerSearchStudent from './Employer/EmployerSearchStudent';
 import PostJob from './Employer/PostJob';
 import PostEvent from './Employer/PostEvent';
 
-import ListAllMessages from './Message/ListAllMessages';
 
 // Create a Main Component
 class Main extends Component {
@@ -38,7 +36,6 @@ class Main extends Component {
       <div>
         {/* Render Different Component based on Route */}
         <Route exact="true" path="/" component={Login} />
-        <Route path='/amazon' component={Wallet}/>
         <Route path="/student" component={StudentSignIn} />
         <Route path="/employer" component={EmployerSignIn} />
         <Route path="/studentsignup" component={StudentSignUp} />
@@ -66,8 +63,6 @@ class Main extends Component {
         <Route path="/employersearchstudents" component={EmployerSearchStudent} />
         <Route path="/postjob" component ={PostJob} />
         <Route path="/postevent" component ={PostEvent} />
-
-        <Route path="/messages" component = {ListAllMessages} />
       </div>
         )
     }

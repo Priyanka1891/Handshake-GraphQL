@@ -3,8 +3,8 @@ import StudentNavbar from './StudentNavbar';
 import axios from 'axios';
 import ListEvent from './ListEvent';
 import {connect} from 'react-redux';
-import { fillEventDetailsList } from '../../common_store/actions/event'
-import { backendURL } from   "../../Utils/config"
+// import { fillEventDetailsList } from '../../common_store/actions/event'
+import { backendURL } from   "../../config"
 
 
 const initialState={
@@ -157,7 +157,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    fillEventDetailsList : (details) => dispatch(fillEventDetailsList(details)),
+    // fillEventDetailsList : (details) => dispatch(fillEventDetailsList(details)),
   }
 }
 

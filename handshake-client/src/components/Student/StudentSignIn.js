@@ -1,19 +1,12 @@
 import React, {Component} from 'react';
 import {Redirect} from 'react-router';
-import {connect} from 'react-redux';
-import { fillStudentDetails}  from "../../common_store/actions/login";
-import {fillStudentBasicDetails, fillStudentEducationDetails, fillStudentExperienceDetails,
-        fillStudentImageDetails, fillStudentResumeDetails} from "../../common_store/actions/student"
-import axios from 'axios';
-import { backendURL } from   "../../Utils/config"
-
-const jwt_decode = require('jwt-decode');
-
+import { graphql } from 'react-apollo';
+import {loginMutation} from '../../mutation/mutations';
 
 const initialState={
   username : "",
   password : "",
-  token: ""
+  loginFlag : false
 }
 
 class StudentSignIn extends Component{
@@ -39,51 +32,33 @@ passwordChangeHandler = (e) => {
   })
 }
 
-dispatch = async (state) => {
-  await this.props.fillStudentDetails(state)  
-  return this.props.studentDetails;
-}
-
-login = (e) => {
+login = async (e) => {
   e.preventDefault();
-  const data = {
-    username : this.state.username,
-    password : this.state.password,
-    editmode : true
+  let mutationResponse = await this.props.loginMutation({
+      variables: {
+          username: this.state.username,
+          password: this.state.password,
+      }
+  });
+  let response = mutationResponse.data.login;
+  if (response) {
+      if (response.status === "200") {
+        this.setState({
+          loginFlag: true
+        });
+      } else {
+        this.setState({
+          loginFlag: false
+        });
+      }
   }
-  axios.defaults.withCredentials = true;
-  console.log("Sending Data "+ JSON.stringify(data));
-  axios.post(`${backendURL}/student/signin`,data)
-    .then(response => {
-      const newStudentDetails={...response.data.details,
-        editmode : true};
-      this.dispatch(newStudentDetails)
-        .then(result => {
-          console.log("Student details: ", result);
-          this.setState({
-            token: response.data.value
-          });
-          this.props.fillStudentBasicDetails(result.basicDetails);
-          this.props.fillStudentEducationDetails(result.studentEducation);
-          this.props.fillStudentExperienceDetails(result.studentExperience);
-          this.props.fillStudentImageDetails(result.image);
-          this.props.fillStudentResumeDetails(result.resume);
-      });
-      console.log("Response data is ",response.data.details);
-    })
-    .catch(error => {
-      console.log(error);
-    });
-} 
+}
 
 render() {     
   let redirectVar = null;
-  if (this.state.token.length > 0) {
-    localStorage.setItem("token", this.state.token);
-    var decoded = jwt_decode(this.state.token.split(' ')[1]);
-    localStorage.setItem("user_id", decoded._id);
-    localStorage.setItem("username", decoded.username);
-    redirectVar = <Redirect to="/studentprofilepage" />
+  if (this.state.loginFlag) {
+    localStorage.setItem("username", this.state.username);
+    // redirectVar = <Redirect to="/studentprofilepage" />
   }
   else{
       redirectVar = <Redirect to="/student" />
@@ -135,21 +110,4 @@ render() {
     }
 }
 
-function mapStateToProps(state) {
-  return {
-    studentDetails : state.login.studentDetails
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    fillStudentDetails : (details) => dispatch(fillStudentDetails(details)),
-    fillStudentBasicDetails : (details) => dispatch(fillStudentBasicDetails(details)),
-    fillStudentEducationDetails : (details) => dispatch(fillStudentEducationDetails(details)),
-    fillStudentExperienceDetails : (details) => dispatch(fillStudentExperienceDetails(details)),
-    fillStudentImageDetails : (details) => dispatch(fillStudentImageDetails(details)),
-    fillStudentResumeDetails : (details) => dispatch(fillStudentResumeDetails(details)),
-  }
-}
-// export Student Sign In Component
-export default connect(mapStateToProps, mapDispatchToProps)(StudentSignIn);
+export default graphql(loginMutation, { name: "loginMutation" })(StudentSignIn);

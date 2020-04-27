@@ -3,10 +3,10 @@ import {connect} from 'react-redux';
 import axios from 'axios';
 import EmployerNavbar from './EmployerNavbar';
 import Details from  './Details';
-import { fillEmployerDetails } from "../../common_store/actions/login";
-import { backendURL } from   "../../Utils/config"
+// import { fillEmployerDetails } from "../../common_store/actions/login";
+import { backendURL } from   "../../config"
 import StudentNavbar from '../Student/StudentNavbar';
-
+// var backendURL;
 
 const initialState={
   reRender : false
@@ -122,7 +122,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    fillEmployerDetails : (details) => dispatch(fillEmployerDetails(details))
+    // fillEmployerDetails : (details) => dispatch(fillEmployerDetails(details))
   }
 }
 

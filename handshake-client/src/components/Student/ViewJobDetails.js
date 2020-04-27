@@ -1,11 +1,10 @@
 import React, {Component} from 'react';
 import StudentNavbar from './StudentNavbar';
-import Resume from './Resume';
 import axios from 'axios';
 import {Redirect} from 'react-router';
 import {connect} from 'react-redux';
-import { backendURL } from   "../../Utils/config"
-import { fillBothDetails } from "../../common_store/actions/login";
+import { backendURL } from   "../../config"
+// import { fillBothDetails } from "../../common_store/actions/login";
 
 
 const initialState={
@@ -119,8 +118,7 @@ class ViewJobDetails extends Component {
           </div>
           <br/>
           <br/>
-          {this.state.uploadresume ?
-         <Resume enableapply = {this.enableApply}/> : <div/>}
+         
         </div>
         </React.Fragment>
       )
@@ -136,7 +134,7 @@ function mapStateToProps(state) {
 }
 function mapDispatchToProps(dispatch) {
   return {
-    fillBothDetails : (details) => dispatch(fillBothDetails(details))
+    // fillBothDetails : (details) => dispatch(fillBothDetails(details))
   }
 }
 

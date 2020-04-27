@@ -2,10 +2,10 @@ import React, {Component} from 'react';
 import {Redirect} from 'react-router';
 import {connect} from 'react-redux';
 import axios from 'axios';
-import { fillEmployerDetails } from "../../common_store/actions/login";
-import { backendURL } from   "../../Utils/config"
+// import { fillEmployerDetails } from "../../common_store/actions/login";
+// import { backendURL } from   "../../Utils/config"
 
-
+var backendURL;
 const initialState={
   username : "",
   password : "",
@@ -129,7 +129,7 @@ function mapStateToProps(state) {
   
 function mapDispatchToProps(dispatch) {
   return {
-    fillEmployerDetails : (details) => dispatch(fillEmployerDetails(details))
+    // fillEmployerDetails : (details) => dispatch(fillEmployerDetails(details))
   }
 }
   // export EMployer Sign Up Component

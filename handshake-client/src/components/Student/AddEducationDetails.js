@@ -2,8 +2,8 @@ import React, {Component} from 'react';
 import {Redirect} from 'react-router';
 import {connect} from 'react-redux';
 import axios from 'axios';
-import { fillStudentDetails } from "../../common_store/actions/login";
-import { backendURL } from   "../../Utils/config"
+// import { fillStudentDetails } from "../../common_store/actions/login";
+import { backendURL } from   "../../config"
 import StudentNavbar from './StudentNavbar';
 
 
@@ -168,7 +168,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    fillStudentDetails : (details) => dispatch(fillStudentDetails(details))
+    // fillStudentDetails : (details) => dispatch(fillStudentDetails(details))
   }
 }
 
