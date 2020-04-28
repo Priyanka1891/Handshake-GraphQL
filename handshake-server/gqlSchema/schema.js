@@ -10,6 +10,7 @@ const {Jobs} = require('../dbSchema/JobModel');
 const {Events} = require('../dbSchema/EventModel');
 
 const {login} = require('../mutations/login')
+const {updateStudentDetails} = require('../mutations/student')
 
 
 
@@ -90,7 +91,7 @@ const Mutation = new GraphQLObjectType({
             resolve(parent, args) {
                 return login(args);
             }
-        }
+        },
         // addCustomer: {
         //     type: StatusType,
         //     args: {
@@ -120,19 +121,24 @@ const Mutation = new GraphQLObjectType({
         //         return ownerSignup(args);
         //     }
         // },
-        // updateCustomer: {
-        //     type: StatusType,
-        //     args: {
-        //         name: { type: GraphQLString },
-        //         email_id: { type: GraphQLString },
-        //         password: { type: GraphQLString },
-        //         address: { type: GraphQLString },
-        //         phone_number: { type: GraphQLString }
-        //     },
-        //     resolve(parent, args) {
-        //         return updateCustomer(args);
-        //     }
-        // },
+        updateStudentDetails: {
+            type: StatusType,
+            args: {
+                username : {type : GraphQLString},
+                email : {type :GraphQLString},
+                name : {type : GraphQLString},
+                contactno : {type : GraphQLString},
+                dob : {type : GraphQLString},
+                city : {type : GraphQLString},
+                state : {type :  GraphQLString},
+                country : {type : GraphQLString},
+                objective : {type : GraphQLString},
+                skills : {type : GraphQLString}
+            },
+            resolve(parent, args) {
+                return updateStudentDetails(args);
+            }
+        },
         // updateOwner: {
         //     type: StatusType,
         //     args: {

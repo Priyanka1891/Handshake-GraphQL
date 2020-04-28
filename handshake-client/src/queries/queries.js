@@ -13,13 +13,38 @@ const getRestaurantsQuery = gql`
     }
 `;
 
-const getCustomerQuery = gql`
-    query($user_id: String){
-        customer(user_id: $user_id) {
-            name
-            email_id
-            address
-            phone_number
+const getStudentQuery = gql`
+    query($username: String){
+        student(username: $username) {
+            username,
+            email,
+            password,
+            basicDetails {
+              name,
+              dob,
+              city,
+              state,
+              country,
+              contactno,
+              objective,
+              skills
+            },
+            studentEducation {
+              colgname,
+              location,
+              degree,
+              major,
+              yearofpassing,
+              cgpa
+            },
+            studentExperience {
+              companyname,
+              companylocation,
+              title,
+              startdate,
+              enddate,
+              jobdetails
+            }
         }
     }
 `;
@@ -62,4 +87,4 @@ const getMenuQuery = gql`
 `;
 
 
-export { getRestaurantsQuery, getCustomerQuery, getOwnerQuery, getMenuSectionsQuery, getMenuQuery };
+export { getRestaurantsQuery, getStudentQuery, getOwnerQuery, getMenuSectionsQuery, getMenuQuery };

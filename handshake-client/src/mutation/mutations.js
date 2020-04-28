@@ -27,9 +27,22 @@ const loginMutation = gql`
     }
 `;
 
-const updateCustomerMutation = gql`
-    mutation updateCustomer($name: String, $email_id: String, $password: String, $address: String, $phone_number: String){
-        updateCustomer(name: $name, email_id: $email_id, password: $password, address: $address, phone_number: $phone_number){
+// name: this.state.name || student.basicDetails.name,
+// contactno : this.state.contactno || student.basicDetails.contactno,
+// dob: this.state.dob || student.basicDetails.dob ,
+// city: this.state.city || student.basicDetails.city,
+// state: this.state.state || student.basicDetails.state,
+// country: this.state.country || student.basicDetails.country,
+// objective: this.state.objective || student.basicDetails.objective,
+// skills: this.state.skills || student.basicDetails.skills,
+
+const updateStudentDetailsMutation = gql`
+    mutation updateStudentDetails($username: String, $email: String,
+        $name: String, $contactno: String, $dob: String, $city: String, $state: String, $country: String,
+        $objective: String, $skills: String){
+        updateStudentDetails(username: $username, email: $email,  name: $name, contactno : $contactno,
+            dob: $dob, city: $city, state: $state, country: $country, objective : $objective, 
+            skills : $skills){
             message
             status
         }
@@ -63,4 +76,4 @@ const addMenuItemMutation = gql`
     }
 `;
 
-export {addCustomerMutation, addOwnerMutation, loginMutation, updateCustomerMutation, updateOwnerMutation, addMenuSectionMutation, addMenuItemMutation};
+export {addCustomerMutation, addOwnerMutation, loginMutation, updateStudentDetailsMutation, updateOwnerMutation, addMenuSectionMutation, addMenuItemMutation};

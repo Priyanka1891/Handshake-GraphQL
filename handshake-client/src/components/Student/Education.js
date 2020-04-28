@@ -1,10 +1,9 @@
 import React, {Component} from 'react';
-import {connect} from 'react-redux';
 import {Redirect} from 'react-router';
 import axios from 'axios';
-// import { fillStudentDetails } from "../../common_store/actions/login";
 import { backendURL } from   "../../config"
-
+import { graphql } from 'react-apollo';
+import { getStudentQuery} from '../../queries/queries';
 
 
 const initialState={
@@ -21,7 +20,7 @@ class Education extends Component{
 
   dispatch = async (state) => {
     await this.props.fillStudentDetails(state);
-    return this.props.studentDetails;
+    return this.props.data.student;
   }
 
 
@@ -57,55 +56,46 @@ class Education extends Component{
   render(){
       let redirectVar = null;
       if (this.state.editEducationDetails) {
-        redirectVar = <Redirect to={{pathname :'/editeducationdetails',state:this.props.index}}/>
+        redirectVar = <Redirect to={{pathname :'/editeducationdetails', state:this.props.index}}/>
       }
       return(
         <React.Fragment> 
         {redirectVar}
-                  {this.props.studentDetails.editmode && (this.props.studentDetails.studentEducation.length > this.props.index)?(<button type="button" onClick={this.editStudentDetails} className="btn btn-default btn-sm"><span className="glyphicon glyphicon-pencil"></span>
+                  {this.props.edit && (this.props.data.student.studentEducation.length > this.props.index)?(<button type="button" onClick={this.editStudentDetails} className="btn btn-default btn-sm"><span className="glyphicon glyphicon-pencil"></span>
                   </button>) :(<div></div>)} 
-                  &nbsp;&nbsp;{this.props.studentDetails.editmode && (this.props.studentDetails.studentEducation.length > this.props.index)?(<button type="button" onClick={this.deleteStudentDetails} className="btn btn-default btn-sm">
+                  &nbsp;&nbsp;{this.props.edit && (this.props.data.student.studentEducation.length > this.props.index)?(<button type="button" onClick={this.deleteStudentDetails} className="btn btn-default btn-sm">
                   <span className="glyphicon glyphicon-trash"></span>
                   </button>):(<div></div>)} 
                   <br/>
-                  {(this.props.studentDetails.studentEducation.length > this.props.index) ?
+                  {(this.props.data.student.studentEducation.length > this.props.index) ?
                   <label>College Name :&nbsp;
-                  {this.props.studentDetails.studentEducation[this.props.index].colgname}</label>: <label />}
+                  {this.props.data.student.studentEducation[this.props.index].colgname}</label>: <label />}
                   <br />
-                  {(this.props.studentDetails.studentEducation.length > this.props.index) ?
-                  <label>Location :&nbsp;{this.props.studentDetails.studentEducation[this.props.index].location}</label>:<label/>}
+                  {(this.props.data.student.studentEducation.length > this.props.index) ?
+                  <label>Location :&nbsp;{this.props.data.student.studentEducation[this.props.index].location}</label>:<label/>}
                   <br />
-                  {(this.props.studentDetails.studentEducation.length > this.props.index) ?
+                  {(this.props.data.student.studentEducation.length > this.props.index) ?
                   <label>Degree :&nbsp;{
-                  this.props.studentDetails.studentEducation[this.props.index].degree}</label> : <label/>}
+                  this.props.data.student.studentEducation[this.props.index].degree}</label> : <label/>}
                   <br />
-                  {(this.props.studentDetails.studentEducation.length > this.props.index) ?
+                  {(this.props.data.student.studentEducation.length > this.props.index) ?
                   <label>Major :&nbsp;{
-                  this.props.studentDetails.studentEducation[this.props.index].major}</label> : <label/>}
+                  this.props.data.student.studentEducation[this.props.index].major}</label> : <label/>}
                   <br />
-                  {(this.props.studentDetails.studentEducation.length > this.props.index) ?
+                  {(this.props.data.student.studentEducation.length > this.props.index) ?
                   <label>Year of Passing :&nbsp;{
-                  this.props.studentDetails.studentEducation[this.props.index].yearofpassing}</label>: <label/>}
+                  this.props.data.student.studentEducation[this.props.index].yearofpassing}</label>: <label/>}
                   <br />
-                  {(this.props.studentDetails.studentEducation.length > this.props.index) ?
+                  {(this.props.data.student.studentEducation.length > this.props.index) ?
                   <label>CGPA :&nbsp;{
-                  this.props.studentDetails.studentEducation[this.props.index].cgpa}</label> : <label/>}  
+                  this.props.data.student.studentEducation[this.props.index].cgpa}</label> : <label/>}  
           </React.Fragment>
         )
     }
 }
 
-function mapStateToProps(state) {
-  return {
-    studentDetails : state.login.studentDetails,
-  }
-}
-function mapDispatchToProps(dispatch) {
-  return {
-    // fillStudentDetails : (details) => dispatch(fillStudentDetails(details))
-  }
-}
   
-
-// exportEducation Component
-export default connect(mapStateToProps, mapDispatchToProps)(Education);
+export default graphql(getStudentQuery, {
+  options: {
+      variables: { username: localStorage.getItem("username") }
+  }})(Education);

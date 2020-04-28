@@ -1,15 +1,20 @@
 import React, {Component} from 'react';
 import {Redirect} from 'react-router';
-import {connect} from 'react-redux';
-import axios from 'axios';
-// import { fillStudentDetails } from "../../common_store/actions/login";
-// import { fillStudentBasicDetails } from "../../common_store/actions/student"
-import { backendURL } from   "../../config"
-
+import { graphql, compose } from 'react-apollo';
+import { getStudentQuery} from '../../queries/queries';
+import { updateStudentDetailsMutation } from '../../mutation/mutations';
 
 const initialState={
   detailsSubmitted : false,
-  studentDetails : null
+  name : null,
+  dob : null,
+  city : null,
+  state : null,
+  country : null,
+  objective : null,
+  contactno : null,
+  skills : null,
+  email : null
 }
 
 
@@ -18,7 +23,6 @@ class Editdetails extends Component{
   constructor(props){
       super(props);      
       this.state = initialState;
-      this.state.studentDetails = this.props.studentDetails;
       this.nameChangeHandler = this.nameChangeHandler.bind(this);
       this.dobChangeHandler = this.dobChangeHandler.bind(this);
       this.cityChangeHandler = this.cityChangeHandler.bind(this);
@@ -32,117 +36,93 @@ class Editdetails extends Component{
   }
 
   nameChangeHandler = (e) => {
-    var newStudentDetails = this.state.studentDetails;
-    newStudentDetails.basicDetails  =  this.state.studentDetails.basicDetails ? 
-                                            this.state.studentDetails.basicDetails  : {};
-    newStudentDetails.basicDetails.name = e.target.value;
-    this.setState({studentDetails : newStudentDetails});
+    this.setState({name : e.target.value});
   }
 
   contactnoChangeHandler = (e) => {
-    var newStudentDetails = this.state.studentDetails;
-    newStudentDetails.basicDetails  =  this.state.studentDetails.basicDetails ? 
-    this.state.studentDetails.basicDetails  : {};
-    newStudentDetails.basicDetails.contactno = e.target.value;
-    this.setState({studentDetails : newStudentDetails});
+    this.setState({contactno: e.target.value});
   }
 
   dobChangeHandler = (e) => {
-    var newStudentDetails = this.state.studentDetails;
-    newStudentDetails.basicDetails  =  this.state.studentDetails.basicDetails ? 
-    this.state.studentDetails.basicDetails  : {};
-    newStudentDetails.basicDetails.dob = e.target.value;
-    this.setState({studentDetails : newStudentDetails});
+    this.setState({dob: e.target.value});
   }
 
   cityChangeHandler = (e) => {
-    var newStudentDetails = this.state.studentDetails;
-    newStudentDetails.basicDetails  =  this.state.studentDetails.basicDetails ? 
-    this.state.studentDetails.basicDetails  : {};
-    newStudentDetails.basicDetails.city = e.target.value;
-    this.setState({studentDetails : newStudentDetails});
+    this.setState({city: e.target.value});
   }
 
   stateChangeHandler = (e) => {
-    var newStudentDetails = this.state.studentDetails;
-    newStudentDetails.basicDetails  =  this.state.studentDetails.basicDetails ? 
-    this.state.studentDetails.basicDetails  : {};
-    newStudentDetails.basicDetails.state = e.target.value;
-    this.setState({studentDetails : newStudentDetails});
+    this.setState({state: e.target.value});
   }
 
   countryChangeHandler = (e) => {
-    var newStudentDetails = this.state.studentDetails;
-    newStudentDetails.basicDetails  =  this.state.studentDetails.basicDetails ? 
-    this.state.studentDetails.basicDetails  : {};
-    newStudentDetails.basicDetails.country = e.target.value;
-    this.setState({studentDetails : newStudentDetails});
+    this.setState({country: e.target.value});
   }
 
   objectiveChangeHandler = (e) => {
-    var newStudentDetails = this.state.studentDetails;
-    newStudentDetails.basicDetails  =  this.state.studentDetails.basicDetails ? 
-    this.state.studentDetails.basicDetails  : {};
-    newStudentDetails.basicDetails.objective = e.target.value;
-    console.log("HERE ", newStudentDetails);
-    this.setState({studentDetails : newStudentDetails});
+    this.setState({objective: e.target.value});
   }
 
   skillsChangeHandler = (e) => {
-    var newStudentDetails = this.state.studentDetails;
-    newStudentDetails.basicDetails  =  this.state.studentDetails.basicDetails ? 
-    this.state.studentDetails.basicDetails  : {};
-    newStudentDetails.basicDetails.skills = e.target.value;
-    console.log("HERE ", newStudentDetails);
-    this.setState({studentDetails : newStudentDetails});
+    this.setState({skills: e.target.value});
   }
 
   emailChangeHandler = (e) => {
-    var newStudentDetails = this.state.studentDetails;
-    newStudentDetails.email  =  this.state.studentDetails.email ? 
-    this.state.studentDetails.basicDetails  : {};
-    newStudentDetails.email = e.target.value;
-    console.log("HERE ", newStudentDetails);
-    this.setState({studentDetails : newStudentDetails});
+    this.setState({email: e.target.value});
   }
 
 
-  dispatch = async (state) => {
-    await this.props.fillStudentDetails(state)
-    return this.props.studentDetails;
-  }
+  // dispatch = async (state) => {
+  //   await this.props.fillStudentDetails(state)
+  //   return student;
+  // }
 
   // cancelStudentDetails=()=>{
 
   // }
 
-  submitStudentDetails = (e) => {
+  submitStudentDetails = async(e) => {
     e.preventDefault();
-    axios.defaults.withCredentials = true;
-    axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
-    // console.log("Sending Data ", this.state.studentDetails, axios.defaults.headers);
-    const data = {details : this.state.studentDetails , edit_details : true};
-    axios.post(`${backendURL}/student/editdetails`, data)
-      .then(response => {
-        console.log("Edit Response: ", response);
-        if (response.status === 200) {
-          console.log("Details are",this.state.studentDetails);
-          this.props.fillStudentBasicDetails(this.state.studentDetails.basicDetails);
-          this.dispatch(this.state.studentDetails)
-            .then(result => {
-              this.setState({
-                detailsSubmitted : true
-              })
-            });
+    let student;
+    if (this.props.data.student) {
+        student = this.props.data.student;
+    }
+
+    let mutationResponse = await this.props.updateStudentDetailsMutation({
+        variables: {
+            username : localStorage.getItem('username'),
+            email: this.state.email || student.email,
+            name: this.state.name || student.basicDetails.name,
+            contactno : this.state.contactno || student.basicDetails.contactno,
+            dob: this.state.dob || student.basicDetails.dob ,
+            city: this.state.city || student.basicDetails.city,
+            state: this.state.state || student.basicDetails.state,
+            country: this.state.country || student.basicDetails.country,
+            objective: this.state.objective || student.basicDetails.objective,
+            skills: this.state.skills || student.basicDetails.skills,
         }
     });
+    console.log(mutationResponse);
+    let response = mutationResponse.data.updateStudentDetails;
+    if (response) {
+        if (response.status === "200") {
+            this.setState({
+                detailsSubmitted: true
+            });
+        }
+    }
   }
 
   render() {
     let redirectVar = null;
     if (this.state.detailsSubmitted) {
-      redirectVar = <Redirect to="/studentprofilepage" />
+      redirectVar = <Redirect to={{pathname :"/studentprofilepage", state: {edit: true}}} />
     }
+    if (!this.props.data.student) {
+      return <div/>;
+    }
+
+    const student = this.props.data.student;
     return(
       <div>
       {redirectVar}
@@ -153,41 +133,41 @@ class Editdetails extends Component{
                 <h2>Edit Profile</h2>
                 <label>Name</label>
                 <input style={{width:"300px"}} onChange = {this.nameChangeHandler}placeholder=
-                {this.props.studentDetails.basicDetails?this.props.studentDetails.basicDetails.name:null}value={this.state.name}
+                {student.basicDetails? student.basicDetails.name:null}value={this.state.name}
                 type="text" className="form-control" name="name" />
                 <br/>
                 <label>Date Of Birth</label>
-                <input style={{width:"300px"}} onChange = {this.dobChangeHandler}placeholder={this.props.studentDetails.basicDetails?
-                this.props.studentDetails.basicDetails.dob:null}value={this.state.dob}
+                <input style={{width:"300px"}} onChange = {this.dobChangeHandler}placeholder={student.basicDetails?
+                student.basicDetails.dob:null}value={this.state.dob}
                 type="date" className="form-control" name="dob" />
                 <br/>
                 <label>City</label>
-                <input style={{width:"300px"}} onChange = {this.cityChangeHandler}placeholder={this.props.studentDetails.basicDetails?this.props.studentDetails.basicDetails.city:null}value={this.state.city} 
+                <input style={{width:"300px"}} onChange = {this.cityChangeHandler}placeholder={student.basicDetails?student.basicDetails.city:null}value={this.state.city} 
                 type="text" className="form-control" name="city" />
                 <br/>
                 <label>State</label>
-                <input style={{width:"300px"}} onChange = {this.stateChangeHandler}placeholder={this.props.studentDetails.basicDetails?this.props.studentDetails.basicDetails.state:null} value={this.state.state}
+                <input style={{width:"300px"}} onChange = {this.stateChangeHandler}placeholder={student.basicDetails?student.basicDetails.state:null} value={this.state.state}
                 type="text" className="form-control" name="state" />
                 <br/>
                 <label>Country</label>
-                <input style={{width:"300px"}} onChange = {this.countryChangeHandler}placeholder={this.props.studentDetails.basicDetails?this.props.studentDetails.basicDetails.country:null} value={this.state.country}
+                <input style={{width:"300px"}} onChange = {this.countryChangeHandler}placeholder={student.basicDetails?student.basicDetails.country:null} value={this.state.country}
                 type="text" className="form-control" name="country" />
                 <br/>
                 <label>Contact No:</label>
-                <input style={{width:"300px"}} onChange = {this.contactnoChangeHandler}placeholder={this.props.studentDetails.basicDetails?this.props.studentDetails.basicDetails.contactno:null} value={this.state.contactno}
+                <input style={{width:"300px"}} onChange = {this.contactnoChangeHandler}placeholder={student.basicDetails?student.basicDetails.contactno:null} value={this.state.contactno}
                 type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
                 required className="form-control" name="contactno" />
                 <br/>
                 <label>Email:</label>
-                <input style={{width:"300px"}} onChange = {this.emailChangeHandler}placeholder={this.props.studentDetails.email?this.props.studentDetails.email:null} value={this.state.email}
+                <input style={{width:"300px"}} onChange = {this.emailChangeHandler}placeholder={student.email?student.email:null} value={this.state.email}
                 type="email" className="form-control" name="email" multiple />
                 <br/>
                 <label>Skills</label>
-                <input style={{width:"300px"}} onChange = {this.skillsChangeHandler}value={this.state.skills} placeholder={this.props.studentDetails.basicDetails?this.props.studentDetails.basicDetails.skills:null}
+                <input style={{width:"300px"}} onChange = {this.skillsChangeHandler}value={this.state.skills} placeholder={student.basicDetails? student.basicDetails.skills:null}
                 type="text" className="form-control" name="skills" />
                 <br/>
                 <label>Objective</label>
-                <input  style={{width:"300px"}} onChange = {this.objectiveChangeHandler}placeholder={this.props.studentDetails.basicDetails?this.props.studentDetails.basicDetails.objective:null} value={this.state.objective}
+                <input  style={{width:"300px"}} onChange = {this.objectiveChangeHandler}placeholder={student.basicDetails?student.basicDetails.objective:null} value={this.state.objective}
                 type="text" className="form-control" name="objective" />
                 <br />
               <button type="button" onClick={this.submitStudentDetails} className="btn btn-success">Save</button> 
@@ -200,18 +180,10 @@ class Editdetails extends Component{
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    studentDetails : state.login.studentDetails
-  }
-}
 
-function mapDispatchToProps(dispatch) {
-  return {
-    // fillStudentDetails : (details) => dispatch(fillStudentDetails(details)),
-    // fillStudentBasicDetails : (details) => dispatch(fillStudentBasicDetails(details))
+export default compose(graphql(getStudentQuery, {
+  options: {
+      variables: { username: localStorage.getItem("username") }
   }
-}
-
-// export default Editdetails;
-export default connect(mapStateToProps, mapDispatchToProps)(Editdetails);
+}),
+graphql(updateStudentDetailsMutation, { name: "updateStudentDetailsMutation" }))(Editdetails);

@@ -32,7 +32,6 @@ class StudentNavbar extends Component {
                 <li><Link to="/studentjobs" >Jobs</Link></li>
                 <li><Link to="/studentevents" >Events</Link></li>
                 <li><Link to="/studentapplications"  >Applications</Link></li>
-                <li><Link to={{pathname: "/messages", state: {isEmployer: false}}}>Messages&nbsp;&nbsp;<span className="glyphicon glyphicon-comment"/></Link></li>
               </ul>
               <ul className="nav navbar-nav navbar-right">
                 <li>
