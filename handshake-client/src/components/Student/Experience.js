@@ -21,35 +21,34 @@ class Experience extends Component{
     })
   }
 
-  deleteStudentDetails = (e) =>{
-    e.preventDefault();
-  }
 
   render(){
       let redirectVar = null;
-      if (this.state.editExperienceDetails) {
-        redirectVar = <Redirect to={{pathname :'/editexperiencedetails',state:this.props.index}}/>
+      if (!this.props.data.student.studentExperience) {
+        return <div/>;
       }
+      if (this.state.editExperienceDetails) {
+        redirectVar = <Redirect to='/editexperiencedetails'/>
+      }
+      var studentExperience = null;
+      studentExperience= this.props.data.student.studentExperience;
+
       return(
         <React.Fragment>
         {redirectVar}
-        {this.props.edit?(<button type="button" onClick={this.editStudentDetails} className="btn btn-default btn-sm"><span className="glyphicon glyphicon-pencil"></span>
-                  </button>) :(<div></div>)} 
-                  &nbsp;&nbsp;{this.props.edit?(<button type="button" onClick={this.deleteStudentDetails} className="btn btn-default btn-sm">
-                  <span className="glyphicon glyphicon-trash"></span>
-                  </button>):(<div></div>)} 
+        <h2>Experience Overview&nbsp;&nbsp;&nbsp;{this.props.edit?(<button type="button" onClick={this.editStudentDetails} className="btn btn-default btn-sm"><span className="glyphicon glyphicon-pencil"></span>
+                  </button>) :null} </h2>
+                  <label>Company Name :&nbsp;{studentExperience.companyname}</label>
                   <br />
-                  <label>Company Name :&nbsp;{this.props.data.student.studentExperience.length?this.props.data.student.studentExperience[this.props.index].companyname:null}</label>
+                  <label>Job Title :&nbsp;{studentExperience.title}</label>
                   <br />
-                  <label>Job Title :&nbsp;{this.props.data.student.studentExperience.length?this.props.data.student.studentExperience[this.props.index].title:null}</label>
+                  <label>Company Location :&nbsp;{studentExperience.companylocation}</label>
                   <br />
-                  <label>Company Location :&nbsp;{this.props.data.student.studentExperience.length?this.props.data.student.studentExperience[this.props.index].companylocation:null}</label>
+                  <label>Start Date :&nbsp;{studentExperience.startdate}</label>
+                  -&nbsp;&nbsp;
+                  <label>End Date :&nbsp;{studentExperience.enddate}</label>
                   <br />
-                  <label>Start Date :&nbsp;{this.props.data.student.studentExperience.length?this.props.data.student.studentExperience[this.props.index].startdate:null}</label>
-                  &nbsp;&nbsp;
-                  <label>End Date :&nbsp;{this.props.data.student.studentExperience.length?this.props.data.student.studentExperience[this.props.index].enddate:null}</label>
-                  <br />
-                  <label>Job Details :&nbsp;{this.props.data.student.studentExperience.length?this.props.data.student.studentExperience[this.props.index].jobdetails:null}</label>
+                  <label>Job Details :&nbsp;{studentExperience.jobdetails}</label>
         </React.Fragment>
         )
     }

@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import { graphql } from 'react-apollo';
 import { getStudentQuery } from '../../queries/queries';
-import {Redirect} from 'react-router';
 import StudentNavbar from './StudentNavbar';
 import EmployerNavbar from '../Employer/EmployerNavbar'
 import Details from './Details';
@@ -10,8 +9,6 @@ import Experience from './Experience';
 
 
 const initialState={
-  addEducation : false,
-  addExperience : false
 }
 
 class StudentProfilePage extends Component {
@@ -20,36 +17,17 @@ class StudentProfilePage extends Component {
     this.state = initialState;
   }
 
-  addStudentEducation = (e) =>{
-    this.setState({
-      addEducation : true
-    })
-  }
-
-  addStudentExperience = (e) =>{
-    this.setState({
-      addExperience : true
-    })
-  }
+ 
 
   render() {
+    console.log("props ", this.props.location);
     const edit  = this.props.location.state.edit;
-    let redirectVar = null;
-    if (this.state.addEducation) {
-      redirectVar = <Redirect to='/addeducation' />
-    }
-    if (this.state.addExperience) {
-      redirectVar = <Redirect to='/addexperience' />
-    }
-
     if (!this.props.data.student) {
       return (<div/>)
     }
 
     return(
       <React.Fragment>
-      {redirectVar}
-        <br />          
         {edit ? <StudentNavbar /> : <EmployerNavbar/>}
         <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css" />
         <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js" />
@@ -59,9 +37,9 @@ class StudentProfilePage extends Component {
           <div className="row profile">
             <div className="col-md-3">
               <div className="profile-sidebar">
-              <div className="profile-userpic">
+              {/* <div className="profile-userpic">
                   <img src="https://static.change.org/profile-img/default-user-profile.svg" className="img-responsive" alt="" />
-                </div> 
+                </div>  */}
                 <div className="profile-usertitle">
                   <div className="profile-usertitle-name">
                     Welcome&nbsp;{this.props.data.student.username}
@@ -102,7 +80,9 @@ class StudentProfilePage extends Component {
               <div className="profile-content">
               <div className="col-md-offset-4">
                 <div id='Details'><Details edit={ edit } /></div>
-                <h2  id='Education'>Education Overview&nbsp;&nbsp;
+                <div id='Education'><Education edit={ edit } /></div>
+                <div id='Experience'><Experience edit={ edit } /></div>
+                {/* <h2  id='Education'>Education Overview&nbsp;&nbsp;
                 { edit ?
                  <button type="button" onClick = {this.addStudentEducation} className="btn btn-default btn-sm"><span className="glyphicon glyphicon-plus-sign"></span></button> : <div/>}</h2>
                 <div>
@@ -120,14 +100,14 @@ class StudentProfilePage extends Component {
                     this.props.data.student.studentExperience.map((experience,index) => (
                       <div><Experience edit = {edit} index={this.props.data.student.studentExperience.length - 1 - index} /></div>
                     ))
-                  }
+                  } */}
                 </div>
                 <br/>
                 </div> 
               </div>
             </div>
           </div>
-        </div>
+        {/* </div> */}
       </React.Fragment>
     )
   }

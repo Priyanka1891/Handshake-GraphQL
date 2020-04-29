@@ -3,7 +3,7 @@ const graphql = require('graphql');
 const {
     GraphQLObjectType,
     GraphQLString,
-    GraphQLList,
+    // GraphQLList,
 } = graphql;
 
 const BasicDetailsType = new GraphQLObjectType({
@@ -52,18 +52,21 @@ const StudentDetail = {
             email: { type: GraphQLString },
             password: { type: GraphQLString },
             basicDetails : { type : BasicDetailsType},
-            studentEducation : {
-                type : new GraphQLList(EducationType),
-                resolve(parent, args) {
-                    return parent.studentEducation;
-                }
-            },
-            studentExperience : {
-                type : new GraphQLList(ExperienceType),
-                resolve(parent, args) {
-                    return parent.studentExperience;
-                }
-            }
+            studentEducation : { type : EducationType},
+            studentExperience : { type : ExperienceType}
+
+            // studentEducation : {
+            //     type : new GraphQLList(EducationType),
+            //     resolve(parent, args) {
+            //         return parent.studentEducation;
+            //     }
+            // },
+            // studentExperience : {
+            //     type : new GraphQLList(ExperienceType),
+            //     resolve(parent, args) {
+            //         return parent.studentExperience;
+            //     }
+            // }
 
         })
     })

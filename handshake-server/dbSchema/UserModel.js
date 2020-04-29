@@ -17,7 +17,7 @@ var usersSchema = new Schema({
       skills : {type: String, required: false}
   
     },
-    studentEducation : [{
+    studentEducation : {
 
       colgname : {type: String, required: false},
       location : {type: String, required: false},
@@ -26,9 +26,9 @@ var usersSchema = new Schema({
       yearofpassing : {type: String, required: false},
       cgpa : {type: String, required: false}
     
-    }],
+    },
 
-    studentExperience : [{
+    studentExperience : {
     companyname : {type: String, required: false},
     companylocation : {type: String, required: false},
     title : {type: String, required: false},
@@ -36,7 +36,7 @@ var usersSchema = new Schema({
     enddate : {type: String, required: false},
     jobdetails : {type: String, required: false},
 
-    }],
+    },
 
     // job id of jobs applied by the student.
     // jobsApplied : [{type: String, required: false}],

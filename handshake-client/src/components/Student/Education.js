@@ -1,7 +1,5 @@
 import React, {Component} from 'react';
 import {Redirect} from 'react-router';
-import axios from 'axios';
-import { backendURL } from   "../../config"
 import { graphql } from 'react-apollo';
 import { getStudentQuery} from '../../queries/queries';
 
@@ -31,64 +29,60 @@ class Education extends Component{
   }
 
 
-  deleteStudentDetails = (e) =>{
-    e.preventDefault();
-    const data = {index : this.props.studentDetails.studentEducation[this.props.index]._id,
-                  delete_education_details : true}
-    var studentDetails=this.props.studentDetails;
-    studentDetails.studentEducation.splice(this.props.index, 1);
-    axios.defaults.withCredentials = true;
-    axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
-    axios.post(`${backendURL}/student/deletedetails`, data)
-      .then(response => {
-        console.log("Delete Education Response: ", response);
-        if (response.status === 200) {
-          this.dispatch(studentDetails)
-            .then(result => {
-              this.setState({
-                detailsSubmitted : true
-              })
-            })
-        }
-    });
-  }
+  // deleteStudentDetails = (e) =>{
+  //   e.preventDefault();
+  //   const data = {index : this.props.studentDetails.studentEducation._id,
+  //                 delete_education_details : true}
+  //   var studentDetails=this.props.studentDetails;
+  //   studentDetails.studentEducation.splice(this.props.index, 1);
+  //   axios.defaults.withCredentials = true;
+  //   axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
+  //   axios.post(`${backendURL}/student/deletedetails`, data)
+  //     .then(response => {
+  //       console.log("Delete Education Response: ", response);
+  //       if (response.status === 200) {
+  //         this.dispatch(studentDetails)
+  //           .then(result => {
+  //             this.setState({
+  //               detailsSubmitted : true
+  //             })
+  //           })
+  //       }
+  //   });
+  // }
 
   render(){
       let redirectVar = null;
       if (this.state.editEducationDetails) {
-        redirectVar = <Redirect to={{pathname :'/editeducationdetails', state:this.props.index}}/>
+        redirectVar = <Redirect to='/editeducationdetails'/>
       }
       return(
         <React.Fragment> 
         {redirectVar}
-                  {this.props.edit && (this.props.data.student.studentEducation.length > this.props.index)?(<button type="button" onClick={this.editStudentDetails} className="btn btn-default btn-sm"><span className="glyphicon glyphicon-pencil"></span>
-                  </button>) :(<div></div>)} 
-                  &nbsp;&nbsp;{this.props.edit && (this.props.data.student.studentEducation.length > this.props.index)?(<button type="button" onClick={this.deleteStudentDetails} className="btn btn-default btn-sm">
-                  <span className="glyphicon glyphicon-trash"></span>
-                  </button>):(<div></div>)} 
-                  <br/>
-                  {(this.props.data.student.studentEducation.length > this.props.index) ?
+                  <h2>Education Overview&nbsp;&nbsp;&nbsp;{this.props.edit && this.props.data.student.studentEducation?(<button type="button" onClick={this.editStudentDetails} className="btn btn-default btn-sm"><span className="glyphicon glyphicon-pencil"></span>
+                  </button>) :null } </h2>
+                  {this.props.data.student.studentEducation ?
                   <label>College Name :&nbsp;
-                  {this.props.data.student.studentEducation[this.props.index].colgname}</label>: <label />}
+                  {this.props.data.student.studentEducation.colgname}</label>:null}
                   <br />
-                  {(this.props.data.student.studentEducation.length > this.props.index) ?
-                  <label>Location :&nbsp;{this.props.data.student.studentEducation[this.props.index].location}</label>:<label/>}
+                  {this.props.data.student.studentEducation ?
+                  <label>Location :&nbsp;{this.props.data.student.studentEducation.location}</label>:null}
                   <br />
-                  {(this.props.data.student.studentEducation.length > this.props.index) ?
+                  {this.props.data.student.studentEducation  ?
                   <label>Degree :&nbsp;{
-                  this.props.data.student.studentEducation[this.props.index].degree}</label> : <label/>}
+                  this.props.data.student.studentEducation.degree}</label> : null}
                   <br />
-                  {(this.props.data.student.studentEducation.length > this.props.index) ?
+                  {this.props.data.student.studentEducation  ?
                   <label>Major :&nbsp;{
-                  this.props.data.student.studentEducation[this.props.index].major}</label> : <label/>}
+                  this.props.data.student.studentEducation.major}</label> : null}
                   <br />
-                  {(this.props.data.student.studentEducation.length > this.props.index) ?
+                  {this.props.data.student.studentEducation ?
                   <label>Year of Passing :&nbsp;{
-                  this.props.data.student.studentEducation[this.props.index].yearofpassing}</label>: <label/>}
+                  this.props.data.student.studentEducation.yearofpassing}</label>: null}
                   <br />
-                  {(this.props.data.student.studentEducation.length > this.props.index) ?
+                  {this.props.data.student.studentEducation ?
                   <label>CGPA :&nbsp;{
-                  this.props.data.student.studentEducation[this.props.index].cgpa}</label> : <label/>}  
+                  this.props.data.student.studentEducation.cgpa}</label> : null}  
           </React.Fragment>
         )
     }
