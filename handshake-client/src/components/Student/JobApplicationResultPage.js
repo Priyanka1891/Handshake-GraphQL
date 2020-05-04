@@ -47,8 +47,6 @@ class JobApplicationResultPage extends Component {
   render() {
     return(
       <React.Fragment>{this.props.studentList.length?<div>
-        {/* <div><h2 style={{align:'center'}}>Upcoming event List :</h2></div>
-        <br /> */}
         <table className="table table-borderless table-hover">
          <thead className="thead-dark">
           <tr>

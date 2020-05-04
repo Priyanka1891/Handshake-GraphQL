@@ -11,6 +11,7 @@ const login = async (args) => {
     var dcPasswd = CryptoJS.AES.decrypt(user.password, secret);
     dcPasswd = dcPasswd.toString(CryptoJS.enc.Utf8);
     if (dcPasswd !== args.password) {
+        console.log("LOGIN");
         return { status: 401, message: "INCORRECT_PASSWORD" };
     }
     return { status: 200, message: user.username };

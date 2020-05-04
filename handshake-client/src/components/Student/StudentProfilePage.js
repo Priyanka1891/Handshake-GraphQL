@@ -7,25 +7,17 @@ import Details from './Details';
 import Education from './Education';
 import Experience from './Experience';
 
-
-const initialState={
-}
-
 class StudentProfilePage extends Component {
   constructor(props) {
     super(props);
-    this.state = initialState;
   }
 
  
-
   render() {
-    console.log("props ", this.props.location);
-    const edit  = this.props.location.state.edit;
     if (!this.props.data.student) {
       return (<div/>)
     }
-
+    const edit  = (this.props.data.student.username === localStorage.getItem("username"));
     return(
       <React.Fragment>
         {edit ? <StudentNavbar /> : <EmployerNavbar/>}
@@ -37,9 +29,6 @@ class StudentProfilePage extends Component {
           <div className="row profile">
             <div className="col-md-3">
               <div className="profile-sidebar">
-              {/* <div className="profile-userpic">
-                  <img src="https://static.change.org/profile-img/default-user-profile.svg" className="img-responsive" alt="" />
-                </div>  */}
                 <div className="profile-usertitle">
                   <div className="profile-usertitle-name">
                     Welcome&nbsp;{this.props.data.student.username}
@@ -82,32 +71,12 @@ class StudentProfilePage extends Component {
                 <div id='Details'><Details edit={ edit } /></div>
                 <div id='Education'><Education edit={ edit } /></div>
                 <div id='Experience'><Experience edit={ edit } /></div>
-                {/* <h2  id='Education'>Education Overview&nbsp;&nbsp;
-                { edit ?
-                 <button type="button" onClick = {this.addStudentEducation} className="btn btn-default btn-sm"><span className="glyphicon glyphicon-plus-sign"></span></button> : <div/>}</h2>
-                <div>
-                  {
-                    this.props.data.student.studentEducation.map((education,index) => (
-                      <div><Education edit = {edit} index={this.props.data.student.studentEducation.length - 1 - index} /></div>
-                    ))
-                  }
-                </div>
-                <h2 id='Experience'>Experience Overview&nbsp;&nbsp;
-                { edit ? 
-                  <button type="button" onClick = {this.addStudentExperience} className="btn btn-default btn-sm"><span className="glyphicon glyphicon-plus-sign"></span></button> :<div/>}</h2>
-                  <div>
-                  {
-                    this.props.data.student.studentExperience.map((experience,index) => (
-                      <div><Experience edit = {edit} index={this.props.data.student.studentExperience.length - 1 - index} /></div>
-                    ))
-                  } */}
                 </div>
                 <br/>
                 </div> 
               </div>
             </div>
           </div>
-        {/* </div> */}
       </React.Fragment>
     )
   }
@@ -115,10 +84,10 @@ class StudentProfilePage extends Component {
 
 
 export default graphql(getStudentQuery, {
-    options: {
-        variables: { username: localStorage.getItem("username") }
-    }
-  })(StudentProfilePage);
+  options: {
+    variables: { username: localStorage.getItem("username") }
+  }
+})(StudentProfilePage);
 
 
 

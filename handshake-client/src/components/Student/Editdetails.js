@@ -163,7 +163,7 @@ class Editdetails extends Component{
                 type="email" className="form-control" name="email" multiple />
                 <br/>
                 <label>Skills</label>
-                <input style={{width:"300px"}} onChange = {this.skillsChangeHandler}value={this.state.skills} placeholder={student.basicDetails? student.basicDetails.skills:null}
+                <input style={{width:"300px"}} onChange = {this.skillsChangeHandler} value={this.state.skills} placeholder={student.basicDetails? student.basicDetails.skills:null}
                 type="text" className="form-control" name="skills" />
                 <br/>
                 <label>Objective</label>

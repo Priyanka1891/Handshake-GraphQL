@@ -3,11 +3,9 @@ const {UserType} = require('./student');
 const {EmployerType} = require('./employer')
 const {JobType} = require('./job');
 
-const {EventType} = require('./event');
 const {Users} = require('../dbSchema/UserModel');
 const {Employers} = require ('../dbSchema/EmployerModel');
 const {Jobs} = require('../dbSchema/JobModel');
-const {Events} = require('../dbSchema/EventModel');
 
 const {login} = require('../mutations/login')
 const {updateStudentDetails} = require('../mutations/student')
@@ -53,17 +51,6 @@ const RootQuery = new GraphQLObjectType({
                 let jobs = await Jobs.find({createdby: args.createdby});
                 if (jobs) {
                     return jobs;
-                }
-            }
-        },
-
-        events : {
-            type : new GraphQLList(EventType),
-            args : {createdby :  {type: GraphQLString}},
-            async resolve(parent, args) {
-                let events =  await Events.find({createdby: args.createdby});
-                if (events) {
-                    return events;
                 }
             }
         }

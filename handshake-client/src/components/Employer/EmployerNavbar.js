@@ -14,7 +14,6 @@ class EmployerNavbar extends Component {
               <ul className="nav navbar-nav">
                 <li><Link to="/employerprofilepage"><span className="glyphicon glyphicon-home" /></Link></li>
                 <li><Link to="/employerjobs">Jobs</Link></li>
-                <li><Link to="/employerevents">Events</Link></li>
                 <li><Link to="/employersearchstudents">Students</Link></li>
               </ul>
               <ul className="nav navbar-nav navbar-right">

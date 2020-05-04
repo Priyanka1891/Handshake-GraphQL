@@ -47,6 +47,7 @@ login = async (e) => {
           loginFlag: true
         });
       } else {
+        window.alert(response.message);
         this.setState({
           loginFlag: false
         });
