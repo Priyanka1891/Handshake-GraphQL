@@ -1,10 +1,7 @@
 import React, {Component} from 'react';
 import {Redirect} from 'react-router';
-import {connect} from 'react-redux';
-import axios from 'axios';
-// import { fillStudentDetails } from "../../common_store/actions/login";
-import { backendURL } from   "../../config"
-
+import { graphql } from 'react-apollo';
+import { studentSignupMutation } from '../../mutation/mutations';
 
 
 const initialState={
@@ -50,7 +47,7 @@ colgnameChangeHandler = (e) => {
   })
 }
 
-submitDetails = (e) => {
+submitDetails = async(e) => {
   e.preventDefault();
   const data = {
     username : this.state.username,
@@ -65,18 +62,26 @@ submitDetails = (e) => {
     return;
   }
 
-  axios.defaults.withCredentials = true;
-  console.log("Sending Data "+JSON.stringify(data));
-  axios.post(`${backendURL}/student/signup`,data)
-    .then(response => {
-      this.setState({
-        signUpDone : true
-      });
-      window.alert(response.data);
-    });
+  let mutationResponse = await this.props.studentSignupMutation({
+    variables: {
+        username: this.state.username,
+        password: this.state.password,
+        email: this.state.email,
+        colgname: this.state.colgname
+    }
+  });
+  let response = mutationResponse.data.studentsignup;
+  if (response) {
+      if (response.status === "200") {
+        this.setState({
+          signUpDone: true
+        });
+        window.alert(response.message);
+      } 
+  }
 }
 
-render(){
+render() {
       let redirectVar = null;
       if (this.state.signUpDone) {
         redirectVar = <Redirect to="/student" />
@@ -109,7 +114,6 @@ render(){
                 </div>
                 <div className="form-group">
                   <label>College Name</label>
-                  {/* <input type="text" className="form-control" name="colgname" placeholder="College Name" /> */}
                   <select className="form-control"
                   onChangeCapture = {this.colgnameChangeHandler} value={this.state.colgname}>
                     <option>-----Choose your University-----</option>
@@ -134,18 +138,4 @@ render(){
     }
 }
 
-// export Student Sign Up Component
-
-function mapStateToProps(state) {
-  return {
-    studentDetails : state.login.studentDetails
-  }
-}
-  
-function mapDispatchToProps(dispatch) {
-  return {
-    // fillStudentDetails : (details) => dispatch(fillStudentDetails(details))
-  }
-}
-  // export Student Sign Up Component
-export default connect(mapStateToProps, mapDispatchToProps)(StudentSignUp);
+export default graphql(studentSignupMutation, { name: "studentSignupMutation" })(StudentSignUp);

@@ -7,7 +7,7 @@ const {Users} = require('../dbSchema/UserModel');
 const {Employers} = require ('../dbSchema/EmployerModel');
 const {Jobs} = require('../dbSchema/JobModel');
 
-const {studentlogin} = require('../mutations/student')
+const {studentlogin, studentsignup} = require('../mutations/student')
 const {updateStudentDetails} = require('../mutations/student')
 
 
@@ -69,6 +69,18 @@ const StatusType = new GraphQLObjectType({
 const Mutation = new GraphQLObjectType({
     name: 'Mutation',
     fields: {
+        studentsignup : {
+          type: StatusType,
+          args: {
+            username: { type: GraphQLString},
+            password:  { type: GraphQLString},
+            email: {type: GraphQLString},
+            colgname: { type: GraphQLString}
+          },
+          resolve(parent, args) {
+              return studentsignup(args);
+          }
+        },
         studentlogin: {
             type: StatusType,
             args: {
@@ -79,35 +91,6 @@ const Mutation = new GraphQLObjectType({
                 return studentlogin(args);
             }
         },
-        // addCustomer: {
-        //     type: StatusType,
-        //     args: {
-        //         name: { type: GraphQLString },
-        //         email_id: { type: GraphQLString },
-        //         password: { type: GraphQLString },
-        //         address: { type: GraphQLString },
-        //         phone_number: { type: GraphQLString }
-        //     },
-        //     async resolve(parent, args) {
-        //         return customerSignup(args);
-        //     }
-        // },
-        // addOwner: {
-        //     type: StatusType,
-        //     args: {
-        //         name: { type: GraphQLString },
-        //         email_id: { type: GraphQLString },
-        //         password: { type: GraphQLString },
-        //         address: { type: GraphQLString },
-        //         phone_number: { type: GraphQLString },
-        //         res_name: { type: GraphQLString },
-        //         res_cuisine: { type: GraphQLString },
-        //         res_zip_code: { type: GraphQLString }
-        //     },
-        //     async resolve(parent, args) {
-        //         return ownerSignup(args);
-        //     }
-        // },
         updateStudentDetails: {
             type: StatusType,
             args: {

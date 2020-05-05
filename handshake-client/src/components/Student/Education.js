@@ -16,40 +16,12 @@ class Education extends Component{
     this.state = initialState;
   }
 
-  dispatch = async (state) => {
-    await this.props.fillStudentDetails(state);
-    return this.props.data.student;
-  }
-
 
   editStudentDetails = (e) =>{
     this.setState({
       editEducationDetails : true
     })
   }
-
-
-  // deleteStudentDetails = (e) =>{
-  //   e.preventDefault();
-  //   const data = {index : this.props.studentDetails.studentEducation._id,
-  //                 delete_education_details : true}
-  //   var studentDetails=this.props.studentDetails;
-  //   studentDetails.studentEducation.splice(this.props.index, 1);
-  //   axios.defaults.withCredentials = true;
-  //   axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
-  //   axios.post(`${backendURL}/student/deletedetails`, data)
-  //     .then(response => {
-  //       console.log("Delete Education Response: ", response);
-  //       if (response.status === 200) {
-  //         this.dispatch(studentDetails)
-  //           .then(result => {
-  //             this.setState({
-  //               detailsSubmitted : true
-  //             })
-  //           })
-  //       }
-  //   });
-  // }
 
   render(){
       let redirectVar = null;

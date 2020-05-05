@@ -9,15 +9,15 @@ const student =
         try {
             let user = await Users.findOne({ username: args.username });
             if (!user) {
-                return { status: 401, message: "NO_USER" };
+                return {status: 401, message: "NO_USER" };
             }
             var dcPasswd = CryptoJS.AES.decrypt(user.password, secret);
             dcPasswd = dcPasswd.toString(CryptoJS.enc.Utf8);
             if (dcPasswd !== args.password) {
                 console.log("LOGIN");
-                return { status: 401, message: "INCORRECT_PASSWORD" };
+                return {status: 401, message: "INCORRECT_PASSWORD" };
             }
-            return { status: 200, message: user.username };
+            return {status: 200, message: user.username };
         } catch (err) {
             console.error("Error");
             return {status: 500 , message: "Server error"}
@@ -28,20 +28,20 @@ const student =
         try {
             let user = await Users.findOne({ username: args.username });
             if (user) {
-                return { status: 401, message: "USER ALREADY EXISTS" };
+                return {status: 401, message: "USER ALREADY EXISTS" };
             }
             var ecPasswd = CryptoJS.AES.encrypt(args.password, secret);
             ecPasswd = ecPasswd.toString();
-            var student_education  = {colgname : args.colgname};
             var newUser = new Users({
-              username : msg.username,
-              email : msg.email,
+              username : args.username,
+              email : args.email,
               password : ecPasswd,
-              studentEducation :[student_education]
-            });    
-    
+              studentEducation : {colgname: args.colgname}
+            });
+            await newUser.save();
+            return {status: 200, message: "User signed up successfully"};
         } catch (err) {
-            return {status: 500 , message: "Server error"}
+            return {status: 500, message: "Server error"};
         } 
     },
 
