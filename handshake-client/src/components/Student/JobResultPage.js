@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import {connect} from 'react-redux';
 import {Redirect} from 'react-router';
 import {Row, Col, Pagination} from 'react-bootstrap';
 
@@ -46,27 +45,6 @@ class JobResultPage extends Component {
     })    
   }
 
-  // searchedJobs = () => {
-  //   const jobs = this.props.jobDetails.map((job, index) => {
-  //        return ( 
-  //           <React.Fragment>
-  //             {/* <div key={job._id}/> */}
-  //                 <tr >
-  //                   <td className="text-center" scope="row">{job.title}</td>
-  //                   <td >{job.location}</td>
-  //                   <td >{job.createdate}</td>
-  //                   <td >{job.enddate}</td>
-  //                   <td >{job.salary}</td>
-  //                   <td >{job.type}</td>
-  //                   <td >{job.createdby}</td>
-  //                   <td><button type="submit" className = "btn btn-link" value={job._id} onClick={this.viewJob}>View</button></td>
-  //                 </tr>
-  //           </React.Fragment>
-  //               );
-  //     });
-  //    return jobs;
-  // }
-
   sectionItems (jobDetails) {
     return (
                  <React.Fragment>
@@ -86,7 +64,6 @@ class JobResultPage extends Component {
     )
   }
 
-
   render() {
     let redirectVar = null,
             section,
@@ -97,7 +74,7 @@ class JobResultPage extends Component {
 
     if (this.state.viewjob) {
       redirectVar = <Redirect to={{pathname : '/viewjobdetails',state: this.state.viewjob} }/>
-    }  //console.log(this.props.jobDetails);  
+    } 
 
     if (this.state && this.state.activePage) {
       active = this.state.activePage;
@@ -156,12 +133,10 @@ class JobResultPage extends Component {
             {renderOutput}
 
             <tbody>
-            <Row>
-                <Col sm={4}></Col>
-                <Col>{pagesBar}</Col>
-          </Row>
-
-              {/* {this.searchedJobs()} */}
+              <Row>
+                  <Col sm={4}></Col>
+                  <Col>{pagesBar}</Col>
+              </Row>
             </tbody>
           </table>
           </div>:<div></div>
@@ -171,9 +146,4 @@ class JobResultPage extends Component {
   }    
 } 
 
-function mapStateToProps(state) {
-  return {
-    studentDetails : state.login.studentDetails
-  }
-}
-export default connect(mapStateToProps, null)(JobResultPage);
+export default JobResultPage;

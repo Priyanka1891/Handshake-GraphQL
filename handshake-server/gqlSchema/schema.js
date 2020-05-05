@@ -7,9 +7,11 @@ const {Users} = require('../dbSchema/UserModel');
 const {Employers} = require ('../dbSchema/EmployerModel');
 const {Jobs} = require('../dbSchema/JobModel');
 
-const {studentlogin, studentsignup} = require('../mutations/student')
+const {studentlogin, studentsignup} = require('../mutations/student');
 const {updateStudentDetails, updateStudentEducationDetails,
-       updateStudentExperienceDetails} = require('../mutations/student')
+       updateStudentExperienceDetails} = require('../mutations/student');
+
+const {jobSearchByQuery}  =  require('../queries/job')
 
 
 
@@ -44,15 +46,11 @@ const RootQuery = new GraphQLObjectType({
                 }
             }
         },
-
-        jobs : {
+        jobsearch : {
             type : new GraphQLList(JobType),
-            args : {createdby : {type: GraphQLString}},
+            args : {searchby : {type: GraphQLString}},
             async resolve(parent, args) {
-                let jobs = await Jobs.find({createdby: args.createdby});
-                if (jobs) {
-                    return jobs;
-                }
+                return jobSearchByQuery(args);
             }
         }
     }
@@ -140,45 +138,6 @@ const Mutation = new GraphQLObjectType({
                 return updateStudentExperienceDetails(args);
             }
         },
-        // updateOwner: {
-        //     type: StatusType,
-        //     args: {
-        //         name: { type: GraphQLString },
-        //         email_id: { type: GraphQLString },
-        //         password: { type: GraphQLString },
-        //         address: { type: GraphQLString },
-        //         phone_number: { type: GraphQLString },
-        //         res_name: { type: GraphQLString },
-        //         res_cuisine: { type: GraphQLString },
-        //         res_zip_code: { type: GraphQLString }
-        //     },
-        //     resolve(parent, args) {
-        //         return updateOwner(args);
-        //     }
-        // },
-        // addMenuSection: {
-        //     type: StatusType,
-        //     args: {
-        //         menu_section_name: { type: GraphQLString },
-        //         user_id: { type: GraphQLString }
-        //     },
-        //     resolve(parent, args) {
-        //         return addMenuSection(args);
-        //     }
-        // },
-        // addMenuItem: {
-        //     type: StatusType,
-        //     args: {
-        //         menu_section_name: { type: GraphQLString },
-        //         user_id: { type: GraphQLString },
-        //         item_name: { type: GraphQLString },
-        //         item_description: { type: GraphQLString },
-        //         item_price: { type: GraphQLString }
-        //     },
-        //     resolve(parent, args) {
-        //         return addMenuItem(args);
-        //     }
-        // },
     }
 });
 

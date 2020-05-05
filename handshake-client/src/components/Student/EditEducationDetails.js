@@ -145,7 +145,7 @@ class EditEducationDetails extends Component{
                 <br />
                 <label>Year of Passing</label>
                 <input style={{width:"300px"}} onChange = {this.yearofpassingChangeHandler}value={this.state.yearofpassing} placeholder={student.studentEducation.yearofpassing}
-                type="text" className="form-control" />
+                type="date" className="form-control" />
                 <br />
                 <label>CGPA</label>
                 <input style={{width:"300px"}} onChange = {this.cgpaChangeHandler}value={this.state.cgpa} placeholder={student.studentEducation.cgpa}

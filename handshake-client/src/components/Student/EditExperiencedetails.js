@@ -118,11 +118,11 @@ class EditExperiencedetails extends Component{
                 <br />
                 <label>Start Date</label>
                 <input style={{width:"300px"}} onChange = {this.startdateChangeHandler}value={this.state.startdate} placeholder={student.studentExperience.startdate}
-                type="text" className="form-control" name="state" />
+                type="date" className="form-control" name="state" />
                 <br/>
                 <label>End Date</label>
                 <input style={{width:"300px"}} onChange = {this.enddateChangeHandler}value={this.state.enddate} placeholder={student.studentExperience.enddate}
-                type="text" className="form-control" name="country" />
+                type="date" className="form-control" name="country" />
                 <br/>
                 <label>Job Details</label>
                 <input style={{width:"300px"}} onChange = {this.jobdetailsChangeHandler}value={this.state.jobdetails} placeholder={student.studentExperience.jobdetails}

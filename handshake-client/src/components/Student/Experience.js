@@ -45,7 +45,7 @@ class Experience extends Component{
                   <label>Company Location :&nbsp;{studentExperience.companylocation}</label>
                   <br />
                   <label>Start Date :&nbsp;{studentExperience.startdate}</label>
-                  -&nbsp;&nbsp;
+                  &nbsp;&nbsp;-&nbsp;&nbsp;
                   <label>End Date :&nbsp;{studentExperience.enddate}</label>
                   <br />
                   <label>Job Details :&nbsp;{studentExperience.jobdetails}</label>
