@@ -7,7 +7,7 @@ const {Users} = require('../dbSchema/UserModel');
 const {Employers} = require ('../dbSchema/EmployerModel');
 const {Jobs} = require('../dbSchema/JobModel');
 
-const {login} = require('../mutations/login')
+const {studentlogin} = require('../mutations/student')
 const {updateStudentDetails} = require('../mutations/student')
 
 
@@ -69,14 +69,14 @@ const StatusType = new GraphQLObjectType({
 const Mutation = new GraphQLObjectType({
     name: 'Mutation',
     fields: {
-        login: {
+        studentlogin: {
             type: StatusType,
             args: {
                 username: { type: GraphQLString },
                 password: { type: GraphQLString },
             },
             resolve(parent, args) {
-                return login(args);
+                return studentlogin(args);
             }
         },
         // addCustomer: {

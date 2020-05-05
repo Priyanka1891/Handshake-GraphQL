@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Redirect} from 'react-router';
 import { graphql } from 'react-apollo';
-import {loginMutation} from '../../mutation/mutations';
+import { studentLoginMutation } from '../../mutation/mutations';
 
 const initialState={
   username : "",
@@ -34,13 +34,13 @@ passwordChangeHandler = (e) => {
 
 login = async (e) => {
   e.preventDefault();
-  let mutationResponse = await this.props.loginMutation({
+  let mutationResponse = await this.props.studentLoginMutation({
       variables: {
           username: this.state.username,
           password: this.state.password,
       }
   });
-  let response = mutationResponse.data.login;
+  let response = mutationResponse.data.studentlogin;
   if (response) {
       if (response.status === "200") {
         this.setState({
@@ -111,4 +111,4 @@ render() {
     }
 }
 
-export default graphql(loginMutation, { name: "loginMutation" })(StudentSignIn);
+export default graphql(studentLoginMutation, { name: "studentLoginMutation" })(StudentSignIn);

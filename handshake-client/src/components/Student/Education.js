@@ -90,6 +90,6 @@ class Education extends Component{
 
   
 export default graphql(getStudentQuery, {
-  options: {
-      variables: { username: localStorage.getItem("username") }
+  options: () => {
+      return { variables: { username: localStorage.getItem("username") }}
   }})(Education);

@@ -18,9 +18,9 @@ const addOwnerMutation = gql`
     }
 `;
 
-const loginMutation = gql`
-    mutation login($username: String, $password: String){
-        login(username: $username, password: $password){
+const studentLoginMutation = gql`
+    mutation studentlogin($username: String, $password: String){
+        studentlogin(username: $username, password: $password){
             message
             status
         }
@@ -76,4 +76,4 @@ const addMenuItemMutation = gql`
     }
 `;
 
-export {addCustomerMutation, addOwnerMutation, loginMutation, updateStudentDetailsMutation, updateOwnerMutation, addMenuSectionMutation, addMenuItemMutation};
+export {addCustomerMutation, addOwnerMutation, studentLoginMutation, updateStudentDetailsMutation, updateOwnerMutation, addMenuSectionMutation, addMenuItemMutation};
