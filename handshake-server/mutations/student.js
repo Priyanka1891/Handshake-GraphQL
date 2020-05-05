@@ -58,6 +58,32 @@ const student =
             return { status: 500, message: "Server error"};
         }
     },
+
+    updateStudentEducationDetails : async (args) => {
+        var details = {};
+        details.studentEducation = {colgname : args.colgname, location : args.location,
+                                    degree : args.degree, major : args.major, yearofpassing : args.yearofpassing,
+                                    cgpa :  args.cgpa}
+        try {                        
+            await Users.updateOne({"username" : args.username}, {$set : details});
+            return { status: 200, message: "Education Details edited successfully" };
+        } catch (err) {
+            return { status: 500, message: "Server error"};
+        }
+    },
+
+    updateStudentExperienceDetails : async (args) => {
+        var details  = {  }
+        details.studentExperience = { companyname: args.companyname, companylocation: args.companylocation,
+                                      title: args.title, startdate: args.startdate, enddate: args.enddate,
+                                      jobdetails:  args.jobdetails };
+        try {                        
+            await Users.updateOne({"username" : args.username}, {$set : details});
+            return { status: 200, message: "Experience Details edited successfully" };
+        } catch (err) {
+            return { status: 500, message: "Server error"};
+        }
+    },
  }
 
 

@@ -71,16 +71,6 @@ class Editdetails extends Component{
     this.setState({email: e.target.value});
   }
 
-
-  // dispatch = async (state) => {
-  //   await this.props.fillStudentDetails(state)
-  //   return student;
-  // }
-
-  // cancelStudentDetails=()=>{
-
-  // }
-
   submitStudentDetails = async(e) => {
     e.preventDefault();
     let student;
@@ -102,7 +92,6 @@ class Editdetails extends Component{
             skills: this.state.skills || student.basicDetails.skills,
         }
     });
-    console.log(mutationResponse);
     let response = mutationResponse.data.updateStudentDetails;
     if (response) {
         if (response.status === "200") {
@@ -182,8 +171,8 @@ class Editdetails extends Component{
 
 
 export default compose(graphql(getStudentQuery, {
-  options: {
-      variables: { username: localStorage.getItem("username") }
+  options: () => {
+    return { variables: { username: localStorage.getItem("username") }};
   }
 }),
 graphql(updateStudentDetailsMutation, { name: "updateStudentDetailsMutation" }))(Editdetails);

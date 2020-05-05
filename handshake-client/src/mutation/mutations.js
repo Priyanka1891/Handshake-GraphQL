@@ -31,4 +31,27 @@ const updateStudentDetailsMutation = gql`
     }
 `;
 
-export {studentSignupMutation, studentLoginMutation, updateStudentDetailsMutation};
+const updateStudentEducationDetailsMutation = gql`
+    mutation updateStudentEducationDetails($username: String, $colgname: String, $location: String,
+        $degree: String, $major: String, $yearofpassing:  String, $cgpa: String) {
+            updateStudentEducationDetails(username: $username, colgname: $colgname, location: $location,
+                degree: $degree, major: $major, yearofpassing: $yearofpassing, cgpa: $cgpa)  {
+                    message
+                    status
+            }
+        }
+`;
+
+const updateStudentExperienceDetailsMutation = gql`
+    mutation updateStudentExperienceDetails($username: String, $companyname: String, $companylocation: String,
+        $title: String, $startdate: String, $enddate:  String, $jobdetails: String) {
+            updateStudentExperienceDetails(username: $username, companyname: $companyname, companylocation: $companylocation,
+                title: $title, startdate: $startdate, enddate: $enddate, jobdetails: $jobdetails)  {
+                    message
+                    status
+            }
+        }
+`;
+
+export {studentSignupMutation, studentLoginMutation, updateStudentDetailsMutation,
+        updateStudentEducationDetailsMutation,updateStudentExperienceDetailsMutation };

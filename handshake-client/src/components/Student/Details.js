@@ -69,6 +69,6 @@ class Details extends Component{
 
 export default graphql(getStudentQuery, {
   options: () => {
-      return {variables: { username: localStorage.getItem("username") }}
+      return {variables: { username: localStorage.getItem("username") }};
   }})(Details);
 

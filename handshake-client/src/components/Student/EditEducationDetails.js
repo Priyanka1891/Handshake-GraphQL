@@ -1,16 +1,21 @@
 import React, {Component} from 'react';
 import {Redirect} from 'react-router';
-import {connect} from 'react-redux';
 import axios from 'axios';
-// import { fillStudentDetails } from "../../common_store/actions/login";
-// import { fillStudentEducationDetails } from "../../common_store/actions/student";
 import { backendURL } from   "../../config";
 import StudentNavbar from './StudentNavbar';
+import { graphql, compose } from 'react-apollo';
+import { getStudentQuery} from '../../queries/queries';
+import { updateStudentEducationDetailsMutation } from '../../mutation/mutations';
 
 
 const initialState={
   detailsSubmitted : false,
-  studentDetails : null
+  colgname : null,
+  location : null,
+  degree : null,
+  major : null,
+  yearofpassing : null,
+  cgpa : null
 }
 
 class EditEducationDetails extends Component{
@@ -29,67 +34,56 @@ class EditEducationDetails extends Component{
   }
 
   colgnameChangeHandler = (e) => {
-    var newStudentDetails = this.state.studentDetails;
-    newStudentDetails.studentEducation[this.props.location.state].colgname = e.target.value;
-    this.setState({studentDetails : newStudentDetails});
+    this.setState({colgname : e.target.value});
   }
 
   locationChangeHandler = (e) => {
-    var newStudentDetails = this.state.studentDetails
-    newStudentDetails.studentEducation[this.props.location.state].location = e.target.value;
-    this.setState({studentDetails : newStudentDetails});
+    this.setState({location : e.target.value});
   }
 
   degreeChangeHandler = (e) => {
-    var newStudentDetails = this.state.studentDetails
-    newStudentDetails.studentEducation[this.props.location.state].degree = e.target.value;
-    this.setState({studentDetails : newStudentDetails});
+    this.setState({degree : e.target.value});
   }
 
   majorChangeHandler = (e) => {
-    var newStudentDetails = this.state.studentDetails
-    newStudentDetails.studentEducation[this.props.location.state].major = e.target.value;
-    this.setState({studentDetails : newStudentDetails});
+    this.setState({major : e.target.value});
   }
 
   yearofpassingChangeHandler = (e) => {
-    var newStudentDetails = this.state.studentDetails
-    newStudentDetails.studentEducation[this.props.location.state].yearofpassing= e.target.value;
-    this.setState({studentDetails : newStudentDetails});
+    this.setState({yearofpassing : e.target.value});
   }
 
   cgpaChangeHandler = (e) => {
-    var newStudentDetails = this.state.studentDetails
-    newStudentDetails.studentEducation[this.props.location.state].cgpa = e.target.value;
-    this.setState({studentDetails : newStudentDetails});
+    this.setState({cgpa : e.target.value});
   }
 
-  dispatch = async (state) => {
-    await this.props.fillStudentDetails(state)
-    return this.props.studentDetails;
-  }
-
-
-  submitStudentDetails = (e) => {
+  submitStudentDetails = async(e) => {
     e.preventDefault();
-    axios.defaults.withCredentials = true;
-    axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
-    const data = {details : this.state.studentDetails,
-                  edit_education_details : true}
-    console.log("Sending Data ", data,  axios.defaults.headers);
-    axios.post(`${backendURL}/student/editdetails`, data)
-      .then(response => {
-        if (response.status === 200) {
-          this.props.fillStudentEducationDetails(this.state.studentDetails.studentEducation);
-          this.dispatch(this.state.studentDetails)
-            .then(result => {
-              this.setState({
-                detailsSubmitted : true
-              })
-            //  console.log("Edited details: ", JSON.stringify(result));
-            })
+    let student;
+    if (this.props.data.student) {
+        student = this.props.data.student;
+    }
+   
+    let mutationResponse = await this.props.updateStudentEducationDetailsMutation({
+        variables: {
+            username : localStorage.getItem('username'),
+            colgname : this.state.colgname || student.studentEducation.colgname,
+            location : this.state.location || student.studentEducation.location,
+            degree : this.state.degree || student.studentEducation.degree,
+            major : this.state.major || student.studentEducation.major ,
+            yearofpassing : this.state.yearofpassing|| student.studentEducation.yearofpassing,
+            cgpa : this.state.cgpa || student.studentEducation.cgpa,
         }
     });
+    let response = mutationResponse.data.updateStudentEducationDetails;
+    console.log("Edit education mutation ", response);
+    if (response) {
+        if (response.status === "200") {
+            this.setState({
+                detailsSubmitted: true
+            });
+        }
+    }
   }
 
   render() {
@@ -97,6 +91,12 @@ class EditEducationDetails extends Component{
     if (this.state.detailsSubmitted) {
       redirectVar = <Redirect to="/studentprofilepage" />
     }
+
+    if (!this.props.data.student) {
+      return <div/>;
+    }
+
+    const student = this.props.data.student;
     return(
       <div>
       {redirectVar}
@@ -112,7 +112,7 @@ class EditEducationDetails extends Component{
                 type="text" className="form-control" name="colgname" /> */}
                 <br/>
                 <select style={{width:"300px"}}  className="form-control"
-                  onChangeCapture = {this.colgnameChangeHandler} value={this.state.colgname}>
+                  onChangeCapture = {this.colgnameChangeHandler} value={this.state.colgname} placeholder = {student.studentEducation.colgname}>
                     <option>-----Choose your University-----</option>
                     <option>UCLA</option>
                     <option>Columbia University</option>
@@ -122,19 +122,16 @@ class EditEducationDetails extends Component{
                 </select>
                 <br />
                 <label>Location</label>
-                <input style={{width:"300px"}} onChange = {this.locationChangeHandler}value={this.state.location} placeholder={this.props.studentDetails.studentEducation[this.props.location.state].location}
+                <input style={{width:"300px"}} onChange = {this.locationChangeHandler}value={this.state.location} placeholder={student.studentEducation.location}
                 type="text" className="form-control" />
                 <br />
                 <label>Degree</label>
-                <input style={{width:"300px"}} onChange = {this.degreeChangeHandler}value={this.state.degree} placeholder={this.props.studentDetails.studentEducation[this.props.location.state].degree}
+                <input style={{width:"300px"}} onChange = {this.degreeChangeHandler} value={this.state.degree} placeholder={student.studentEducation.degree}
                 type="text" className="form-control" />
                 <br />
-                {/* <label>Major</label>
-                <input style={{width:"300px"}} onChange = {this.majorChangeHandler}value={this.state.major} placeholder={this.props.studentDetails.studentEducation[this.props.location.state].major}
-                type="text" className="form-control" /> */}
                 <div className="form-group">
                   <label>Major*</label>
-                  <select className="form-control" style={{width:"300px"}} id="types" onChange = {this.majorChangeHandler} value={this.state.major}>
+                  <select className="form-control" style={{width:"300px"}} id="types" onChange = {this.majorChangeHandler} value={this.state.major} placeholder = {student.studentEducation.major}>
                     <option>--Select Major--</option>
                     <option value="Software Engineering">Software Engineering</option>
                     <option value="Computer Engineering">Computer Engineering</option>
@@ -147,11 +144,11 @@ class EditEducationDetails extends Component{
 
                 <br />
                 <label>Year of Passing</label>
-                <input style={{width:"300px"}} onChange = {this.yearofpassingChangeHandler}value={this.state.yearofpassing} placeholder={this.props.studentDetails.studentEducation[this.props.location.state].yearofpassing}
+                <input style={{width:"300px"}} onChange = {this.yearofpassingChangeHandler}value={this.state.yearofpassing} placeholder={student.studentEducation.yearofpassing}
                 type="text" className="form-control" />
                 <br />
                 <label>CGPA</label>
-                <input style={{width:"300px"}} onChange = {this.cgpaChangeHandler}value={this.state.cgpa} placeholder={this.props.studentDetails.studentEducation[this.props.location.state].cgpa}
+                <input style={{width:"300px"}} onChange = {this.cgpaChangeHandler}value={this.state.cgpa} placeholder={student.studentEducation.cgpa}
                 type="text" className="form-control" />
                 <br />
               <button type="button" onClick={this.submitStudentDetails} className="btn btn-success">Save</button>    
@@ -164,18 +161,9 @@ class EditEducationDetails extends Component{
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    studentDetails : state.login.studentDetails
+export default compose(graphql(getStudentQuery, {
+  options: () => {
+    return { variables: { username: localStorage.getItem("username") }};
   }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    // fillStudentDetails : (details) => dispatch(fillStudentDetails(details)),
-    // fillStudentEducationDetails : (details) => dispatch(fillStudentEducationDetails(details))
-  }
-}
-
-// export default EditEducationdetails;
-export default connect(mapStateToProps, mapDispatchToProps)(EditEducationDetails);
+}),
+graphql(updateStudentEducationDetailsMutation, { name: "updateStudentEducationDetailsMutation" }))(EditEducationDetails);

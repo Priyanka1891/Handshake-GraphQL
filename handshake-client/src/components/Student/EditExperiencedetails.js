@@ -1,15 +1,18 @@
 import React, {Component} from 'react';
 import {Redirect} from 'react-router';
-import {connect} from 'react-redux';
-import axios from 'axios';
-// import { fillStudentDetails } from "../../common_store/actions/login";
-// import { fillStudentExperienceDetails } from "../../common_store/actions/student"
-import { backendURL } from   "../../config"
+import { graphql, compose } from 'react-apollo';
+import { getStudentQuery} from '../../queries/queries';
+import { updateStudentExperienceDetailsMutation } from '../../mutation/mutations';
 
 
 const initialState={
   detailsSubmitted : false,
-  studentDetails : null
+  companyname : null,
+  companylocation : null,
+  title : null,
+  startdate : null,
+  enddate : null,
+  jobdetails : null,
 }
 
 class EditExperiencedetails extends Component{
@@ -19,8 +22,8 @@ class EditExperiencedetails extends Component{
       this.state= initialState;
       this.state.studentDetails = this.props.studentDetails;
       this.companynameChangeHandler = this.companynameChangeHandler.bind(this);
-      this.titleChangeHandler = this.titleChangeHandler.bind(this);
       this.companylocationChangeHandler = this.companylocationChangeHandler.bind(this);
+      this.titleChangeHandler = this.titleChangeHandler.bind(this);
       this.startdateChangeHandler = this.startdateChangeHandler.bind(this);
       this.enddateChangeHandler = this.enddateChangeHandler.bind(this);
       this.jobdetailsChangeHandler = this.jobdetailsChangeHandler.bind(this);
@@ -28,68 +31,57 @@ class EditExperiencedetails extends Component{
   }
 
   companynameChangeHandler = (e) => {
-    var newstudentDetails = this.state.studentDetails;
-    newstudentDetails.studentExperience[this.props.location.state].companyname = e.target.value;
-    this.setState({studentDetails : newstudentDetails});
-  }
-
-  titleChangeHandler = (e) => {
-    var newstudentDetails = this.state.studentDetails;
-    newstudentDetails.studentExperience[this.props.location.state].title = e.target.value;
-    this.setState({studentDetails : newstudentDetails});
+    this.setState({companyname:e.target.value});
   }
 
   companylocationChangeHandler = (e) => {
-    var newstudentDetails = this.state.studentDetails;
-    newstudentDetails.studentExperience[this.props.location.state].companylocation = e.target.value;
-    this.setState({studentDetails : newstudentDetails});
+    this.setState({companylocation:e.target.value});
+  }
+
+  titleChangeHandler = (e) => {
+    this.setState({title:e.target.value});
   }
 
   startdateChangeHandler = (e) => {
-    var newstudentDetails = this.state.studentDetails;
-    newstudentDetails.studentExperience[this.props.location.state].startdate = e.target.value;
-    this.setState({studentDetails: newstudentDetails})
+    this.setState({startdate:e.target.value});
   }
 
   enddateChangeHandler = (e) => {
-    var newstudentDetails = this.state.studentDetails;
-    newstudentDetails.studentExperience[this.props.location.state].enddate = e.target.value;
-    this.setState({studentDetails: newstudentDetails})
+    this.setState({enddate:e.target.value});
   }
 
   jobdetailsChangeHandler = (e) => {
-    var newstudentDetails = this.state.studentDetails;
-    newstudentDetails.studentExperience[this.props.location.state].jobdetails = e.target.value;
-    this.setState({studentDetails: newstudentDetails})
+    this.setState({jobdetails:e.target.value});
   }
 
-
-  dispatch = async (state) => {
-    await this.props.fillStudentDetails(state)
-    return this.props.studentDetails;
-  }
-
-
-  submitStudentDetails = (e) => {
+  submitStudentDetails = async(e) => {
     e.preventDefault();
-    axios.defaults.withCredentials = true;
-    axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
-    const data = {details : this.state.studentDetails,
-                  edit_experience_details : true}
-    console.log("Sending Data ", data,  axios.defaults.headers);
-    axios.post(`${backendURL}/student/editdetails`, data)
-      .then(response => {
-        console.log("Edit Experience Response: ", response);
-        if (response.status === 200) {
-          this.props.fillStudentExperienceDetails(this.state.studentDetails.studentExperience);
-          this.dispatch(this.state.studentDetails)
-            .then(result => {
-              this.setState({
-                detailsSubmitted : true
-              })
-            });
+    let student;
+    if (this.props.data.student) {
+        student = this.props.data.student;
+    }
+   
+    let mutationResponse = await this.props.updateStudentExperienceDetailsMutation({
+        variables: {
+            username : localStorage.getItem('username'),
+            companyname : this.state.companyname || student.studentExperience.companyname,
+            companylocation : this.state.companylocation || student.studentExperience.companylocation,
+            title : this.state.title || student.studentExperience.title,
+            startdate : this.state.startdate || student.studentExperience.startdate ,
+            enddate : this.state.enddate || student.studentExperience.enddate,
+            jobdetails : this.state.jobdetails || student.studentExperience.jobdetails,
         }
     });
+
+    let response = mutationResponse.data.updateStudentExperienceDetails;
+    console.log("Edit education mutation ", response);
+    if (response) {
+        if (response.status === "200") {
+            this.setState({
+                detailsSubmitted: true
+            });
+        }
+    }
   }
 
   render() {
@@ -97,6 +89,12 @@ class EditExperiencedetails extends Component{
     if (this.state.detailsSubmitted) {
       redirectVar = <Redirect to="/studentprofilepage" />
     }
+
+    if (!this.props.data.student) {
+      return <div/>;
+    }
+
+    const student = this.props.data.student;
     return(
       <div>
       {redirectVar}
@@ -107,27 +105,27 @@ class EditExperiencedetails extends Component{
               <div className="col-md-offset-4">
                 <h2>Edit Experience</h2>
                 <label>Company Name</label>
-                <input style={{width:"300px"}} onChange = {this.companynameChangeHandler}value={this.state.companyname} placeholder={this.props.studentDetails.studentExperience[this.props.location.state].companyname}
+                <input style={{width:"300px"}} onChange = {this.companynameChangeHandler}value={this.state.companyname} placeholder={student.studentExperience.companyname}
                 type="text" className="form-control" name="companyname" />
                 <br />
                 <label>Title</label>
-                <input style={{width:"300px"}} onChange = {this.titleChangeHandler}value={this.state.title} placeholder={this.props.studentDetails.studentExperience[this.props.location.state].title}
+                <input style={{width:"300px"}} onChange = {this.titleChangeHandler}value={this.state.title} placeholder={student.studentExperience.title}
                 type="text" className="form-control" name="dob" />
                 <br />
                 <label>Company Location</label>
-                <input style={{width:"300px"}} onChange = {this.companylocationChangeHandler}value={this.state.companylocationn} placeholder={this.props.studentDetails.studentExperience[this.props.location.state].companylocation}
+                <input style={{width:"300px"}} onChange = {this.companylocationChangeHandler}value={this.state.companylocationn} placeholder={student.studentExperience.companylocation}
                 type="text" className="form-control" name="city" />
                 <br />
                 <label>Start Date</label>
-                <input style={{width:"300px"}} onChange = {this.startdateChangeHandler}value={this.state.startdate} placeholder={this.props.studentDetails.studentExperience[this.props.location.state].startdate}
+                <input style={{width:"300px"}} onChange = {this.startdateChangeHandler}value={this.state.startdate} placeholder={student.studentExperience.startdate}
                 type="text" className="form-control" name="state" />
                 <br/>
                 <label>End Date</label>
-                <input style={{width:"300px"}} onChange = {this.enddateChangeHandler}value={this.state.enddate} placeholder={this.props.studentDetails.studentExperience[this.props.location.state].enddate}
+                <input style={{width:"300px"}} onChange = {this.enddateChangeHandler}value={this.state.enddate} placeholder={student.studentExperience.enddate}
                 type="text" className="form-control" name="country" />
                 <br/>
                 <label>Job Details</label>
-                <input style={{width:"300px"}} onChange = {this.jobdetailsChangeHandler}value={this.state.jobdetails} placeholder={this.props.studentDetails.studentExperience[this.props.location.state].jobdetails}
+                <input style={{width:"300px"}} onChange = {this.jobdetailsChangeHandler}value={this.state.jobdetails} placeholder={student.studentExperience.jobdetails}
                 type="text" className="form-control" name="objective" />
                 <br/>
               <button type="button" onClick={this.submitStudentDetails} className="btn btn-success">Save</button>    
@@ -140,18 +138,10 @@ class EditExperiencedetails extends Component{
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    studentDetails : state.login.studentDetails
-  }
-}
 
-function mapDispatchToProps(dispatch) {
-  return {
-    // fillStudentDetails : (details) => dispatch(fillStudentDetails(details)),
-    // fillStudentExperienceDetails : (details) =>dispatch(fillStudentExperienceDetails(details))
+export default compose(graphql(getStudentQuery, {
+  options: () => {
+    return {variables: { username: localStorage.getItem("username")}};
   }
-}
-
-// export default EditExperiencedetails;
-export default connect(mapStateToProps, mapDispatchToProps)(EditExperiencedetails);
+}),
+graphql(updateStudentExperienceDetailsMutation, { name: "updateStudentExperienceDetailsMutation" }))(EditExperiencedetails);

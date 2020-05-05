@@ -8,7 +8,8 @@ const {Employers} = require ('../dbSchema/EmployerModel');
 const {Jobs} = require('../dbSchema/JobModel');
 
 const {studentlogin, studentsignup} = require('../mutations/student')
-const {updateStudentDetails} = require('../mutations/student')
+const {updateStudentDetails, updateStudentEducationDetails,
+       updateStudentExperienceDetails} = require('../mutations/student')
 
 
 
@@ -107,6 +108,36 @@ const Mutation = new GraphQLObjectType({
             },
             resolve(parent, args) {
                 return updateStudentDetails(args);
+            }
+        },
+        updateStudentEducationDetails: {
+            type: StatusType,
+            args: {
+                username : {type : GraphQLString},
+                colgname : {type :GraphQLString},
+                location : {type : GraphQLString},
+                degree : {type : GraphQLString},
+                major : {type : GraphQLString},
+                yearofpassing : {type : GraphQLString},
+                cgpa : {type :  GraphQLString}
+            },
+            resolve(parent, args) {
+                return updateStudentEducationDetails(args);
+            }
+        }, 
+        updateStudentExperienceDetails: {
+            type: StatusType,
+            args: {
+                username : {type : GraphQLString},
+                companyname : {type :GraphQLString},
+                companylocation : {type : GraphQLString},
+                title : {type : GraphQLString},
+                startdate : {type : GraphQLString},
+                enddate : {type : GraphQLString},
+                jobdetails : {type :  GraphQLString}
+            },
+            resolve(parent, args) {
+                return updateStudentExperienceDetails(args);
             }
         },
         // updateOwner: {
