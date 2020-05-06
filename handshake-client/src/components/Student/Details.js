@@ -1,7 +1,5 @@
 import React, {Component} from 'react';
 import {Redirect} from 'react-router';
-import { graphql } from 'react-apollo';
-import { getStudentQuery} from '../../queries/queries';
 
 const initialState={
   editDetails : false,

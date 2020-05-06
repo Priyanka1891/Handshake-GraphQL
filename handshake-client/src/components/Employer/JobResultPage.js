@@ -151,7 +151,7 @@ class JobResultPage extends Component {
     };
     var updatedList = this.state.listStudentsApplied;
     for (var idx = 0; idx < updatedList.studentsapplied.length; ++idx) {
-      if (updatedList.studentsapplied[idx].username == data.username){
+      if (updatedList.studentsapplied[idx].username === data.username){
         updatedList.studentsapplied[idx].status = data.status;
       }
     }

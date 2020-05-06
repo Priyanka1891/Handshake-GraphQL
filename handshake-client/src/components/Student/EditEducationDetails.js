@@ -1,7 +1,5 @@
 import React, {Component} from 'react';
 import {Redirect} from 'react-router';
-import axios from 'axios';
-import { backendURL } from   "../../config";
 import StudentNavbar from './StudentNavbar';
 import { graphql, compose } from 'react-apollo';
 import { getStudentQuery} from '../../queries/queries';

@@ -66,7 +66,7 @@ class EmployerSearchStudent extends Component {
                 <label>Student Search:</label>
                 <br />
                 <input onChange = {this.queryChangeHandler} 
-                    type ='text' style={{width:'70%'}}type="text" placeholder="Enter Student Name or College Name or Skill to Search"/>
+                    type ='text' style={{width:'70%'}} placeholder="Enter Student Name or College Name or Skill to Search"/>
                 <button type='submit'onClick={this.listStudentResults}><i className="fa fa-search"></i></button>
                 <br />
                 <br />

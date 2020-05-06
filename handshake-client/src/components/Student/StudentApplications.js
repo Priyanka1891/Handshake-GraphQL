@@ -5,10 +5,6 @@ import { graphql } from 'react-apollo';
 import {getJobsAppliedQuery} from '../../queries/queries';
 
 class StudentApplications extends Component {
-  constructor(props){
-    super(props);
-  }
-
   render() {
     let resultPage = null;
     if (!this.props.data.jobsapplied) {
