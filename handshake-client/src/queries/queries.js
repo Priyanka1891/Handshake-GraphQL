@@ -84,5 +84,18 @@ const getJobsAppliedQuery = gql`
   }
 `;
 
+const getStudentSearchQuery = gql`
+  query getStudentSearchQuery($searchby: String){
+    studentsearch(searchby: $searchby) {
+      username
+      basicDetails{
+        name
+      }
+      studentEducation {
+        colgname
+      }
+    }
+  }
+`;
 
-export { getStudentQuery, getEmployerQuery, getJobSearchQuery, getJobsAppliedQuery };
+export { getStudentQuery, getEmployerQuery, getJobSearchQuery, getJobsAppliedQuery, getStudentSearchQuery };

@@ -37,6 +37,7 @@ class Main extends Component {
 
         {/* Student pages routing */}
         <Route path="/studentprofilepage" component={StudentProfilePage} />
+        <Route path="/viewstudentprofilepage" component={StudentProfilePage} />
         <Route path="/studentjobs" component={StudentJobs} />
         <Route path="/editdetails" component={Editdetails} />
         <Route path="/editeducationdetails" component={EditEducationDetails} />

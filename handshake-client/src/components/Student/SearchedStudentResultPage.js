@@ -1,55 +1,29 @@
 import React, {Component} from 'react';
-import axios from 'axios';
-// import {Redirect} from 'react-router';
-import {connect} from 'react-redux';
-import { backendURL } from   "../../config"
+import {Redirect} from 'react-router';
 
 
 const initialState={
-  // listStudentsRegistered : null,
+  studentusername : null
 }
 
 class SearchedStudentResultPage extends Component {
 
   constructor(props){
     super(props);
-    this.state=initialState;
+    this.state = initialState;
     this.renderSearchedStudents = this.renderSearchedStudents.bind(this);
     this.redirectStudentProfile = this.redirectStudentProfile.bind(this);
   }
 
-  componentWillMount() {
-    this.setState(initialState);
-
-  }
-
-  componentWillReceiveProps() {
-    this.setState(initialState);
-  }
-
   redirectStudentProfile = (e) => {
-    const data ={
-      username : e.target.value,
-      editmode : false
-    };
-    console.log("Data being sent is"+ JSON.stringify(data));
-    axios.defaults.withCredentials = true;
-    axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
-    axios.post(`${backendURL}/student/signin`, data)
-      .then(response=>{
-        console.log("Entered inside axios post req", response);
-        if(response.data.details){
-          // TODO
-          // const bothDetails = {studentDetails : this.props.studentDetails , 
-          //                      otherStudentDetails : response.data.details};
-          // this.props.fillOtherStudentDetails(bothDetails);
-        }
-      })
+    this.setState({
+      studentusername : e.target.value
+    });
   }
 
   renderSearchedStudents = () => {
-    const students = this.props.studentList.map((item, index) => {
-      if (item.username === this.props.studentDetails.username) {
+    const students = this.props.students.map((item, index) => {
+      if (item.username === localStorage.getItem("username")) {
         return (<div/>)
       }
       return ( 
@@ -70,31 +44,17 @@ class SearchedStudentResultPage extends Component {
  
   render() {
     let redirectVar = null;
-    // if (this.props.otherStudentDetails) {
-    //   redirectVar = <Redirect to = '/studentprofilepage'/>
-    // }
+    if (this.state.studentusername) {
+      redirectVar = <Redirect to={{pathname: "/viewstudentprofilepage", 
+                      state: {username: this.state.studentusername}}} />
+    }
     return(
       <React.Fragment>
         {redirectVar}
-        {/* <div className="container" />
-        <div className="login-form" />
-        <div className="panel" /> */}
         <div className="row-container">{this.renderSearchedStudents()}</div>
       </React.Fragment> 
     )
   }    
 }
 
-function mapStateToProps(state) {
-  return {
-    studentDetails : state.login.studentDetails
-  }
-}
-
-// function mapDispatchToProps(dispatch) {
-//   return {
-//     fillOtherStudentDetails : (details) => dispatch(fillOtherStudentDetails(details))
-//   }
-// }
-
-export default connect(mapStateToProps, null)(SearchedStudentResultPage);
+export default SearchedStudentResultPage;

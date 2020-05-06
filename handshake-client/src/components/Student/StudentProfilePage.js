@@ -7,11 +7,9 @@ import EmployerNavbar from '../Employer/EmployerNavbar'
 import Details from './Details';
 import Education from './Education';
 import Experience from './Experience';
-import { studentSignupMutation } from '../../mutation/mutations';
 
 const initialState={
-  reRender : false,
-  student : null
+  student : null,
 }
 
 class StudentProfilePage extends Component {
@@ -42,10 +40,11 @@ class StudentProfilePage extends Component {
       return (<div/>)
     }
     const student = this.state.student;
-    const edit  = (student.username === localStorage.getItem("username"));
+    const isemployer = this.props.location.state ? this.props.location.state.employer : false;
+    const edit = (student.username === localStorage.getItem("username"));
     return(
       <React.Fragment>
-        {edit ? <StudentNavbar /> : <EmployerNavbar/>}
+        {edit ? <StudentNavbar/> : ( isemployer ? <EmployerNavbar/> : <StudentNavbar /> )}
         <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css" />
         <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js" />
         <script src="http://code.jquery.com/jquery-1.11.1.min.js" />
@@ -55,9 +54,14 @@ class StudentProfilePage extends Component {
             <div className="col-md-3">
               <div className="profile-sidebar">
                 <div className="profile-usertitle">
-                  <div className="profile-usertitle-name">
-                    Welcome&nbsp;{student.username}
-                  </div>
+                  {edit ?
+                    (<div className="profile-usertitle-name">
+                      Welcome&nbsp;{student.username}
+                    </div>) :
+                    (<div className="profile-usertitle-name">
+                      {student.username}
+                    </div>)
+                  }
                   <div className="profile-usertitle-job">
                   {student.studentExperience ? 
                     student.studentExperience.title : null}

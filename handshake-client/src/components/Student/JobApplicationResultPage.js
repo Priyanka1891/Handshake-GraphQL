@@ -10,7 +10,7 @@ class JobApplicationResultPage extends Component {
   }
 
 
-  getApplicationDate=(i)=>{
+  getApplicationDate = (i) => {
     var studentsapplied = this.props.jobs[i].studentsapplied;
     for (var idx =0 ; idx < studentsapplied.length ; ++idx) {
       if (studentsapplied[idx].username === localStorage.getItem("username")) {
@@ -19,7 +19,7 @@ class JobApplicationResultPage extends Component {
     }
   }
 
-  getApplicationStatus=(i)=>{
+  getApplicationStatus = (i) => {
     var studentsapplied = this.props.jobs[i].studentsapplied;
     for (var idx =0 ; idx < studentsapplied.length ; ++idx) {
       if (studentsapplied[idx].username === localStorage.getItem("username")) {
@@ -27,6 +27,7 @@ class JobApplicationResultPage extends Component {
       }
     }
   }
+
   listResults(){
       const results = this.props.jobs.map((job, index) => {
          return ( 
@@ -62,6 +63,5 @@ class JobApplicationResultPage extends Component {
     )
   }    
 }
-
 
 export default JobApplicationResultPage;

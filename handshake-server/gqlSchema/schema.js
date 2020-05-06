@@ -7,9 +7,9 @@ const {Users} = require('../dbSchema/UserModel');
 const {Employers} = require ('../dbSchema/EmployerModel');
 // const {Jobs} = require('../dbSchema/JobModel');
 
-const {studentlogin, studentsignup} = require('../mutations/student');
-const {updateStudentDetails, updateStudentEducationDetails,
+const {studentlogin, studentsignup, updateStudentDetails, updateStudentEducationDetails,
        updateStudentExperienceDetails} = require('../mutations/student');
+const {studentSearchByQuery} = require('../queries/student')
 
 const {jobSearchByQuery, jobSearchByApplicantApplied}  =  require('../queries/job');
 const {applyJob} = require('../mutations/job');
@@ -60,8 +60,14 @@ const RootQuery = new GraphQLObjectType({
             async resolve(parent, args) {
                 return jobSearchByApplicantApplied(args);
             }
+        },
+        studentsearch : {
+            type : new GraphQLList(UserType),
+            args : {searchby : {type : GraphQLString}},
+            async resolve(parent, args) {
+                return studentSearchByQuery(args);
+            }
         }
-
     }
 });
 
