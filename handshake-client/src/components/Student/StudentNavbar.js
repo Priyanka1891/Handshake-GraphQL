@@ -13,7 +13,7 @@ class StudentNavbar extends Component {
                 <a className="navbar-brand">Handshake</a>
               </div>
               <ul className="nav navbar-nav">
-                <li><Link to= {{pathname:"/studentprofilepage", state : {edit: true}}} ><span className="glyphicon glyphicon-home" /></Link></li>
+                <li><Link to="/studentprofilepage"><span className="glyphicon glyphicon-home" /></Link></li>
                 <li><Link to="/studentjobs" >Jobs</Link></li>
                 <li><Link to="/studentapplications"  >Applications</Link></li>
                 <li><Link to="/studentlist" >Students</Link></li>
