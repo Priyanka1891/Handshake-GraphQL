@@ -11,7 +11,7 @@ const {studentlogin, studentsignup} = require('../mutations/student');
 const {updateStudentDetails, updateStudentEducationDetails,
        updateStudentExperienceDetails} = require('../mutations/student');
 
-const {jobSearchByQuery}  =  require('../queries/job');
+const {jobSearchByQuery, jobSearchByApplicantApplied}  =  require('../queries/job');
 const {applyJob} = require('../mutations/job');
 
 
@@ -53,7 +53,15 @@ const RootQuery = new GraphQLObjectType({
             async resolve(parent, args) {
                 return jobSearchByQuery(args);
             }
+        },
+        jobsapplied : {
+            type : new GraphQLList(JobType),
+            args : {username : {type: GraphQLString}},
+            async resolve(parent, args) {
+                return jobSearchByApplicantApplied(args);
+            }
         }
+
     }
 });
 

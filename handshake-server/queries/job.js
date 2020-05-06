@@ -9,9 +9,25 @@ const job =
       {'createdby': {$regex: '.*' + args.searchby + '.*', $options:'i'} }
       ]};
     }
-    let jobs = Jobs.find(query);
-    return jobs;
+    try {
+      let jobs = Jobs.find(query);
+      return jobs;
+    } catch(err) {
+      return [];
+    }
+  },
+
+  jobSearchByApplicantApplied : async(args) => {
+    try {
+      const query = {'studentsapplied.username' : args.username };
+      const jobs = await Jobs.find(query);
+      return jobs;
+    } catch (err) {
+      return [];
+    }
+
   }
+
    
  }
 

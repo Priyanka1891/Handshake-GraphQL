@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import {connect} from 'react-redux';
 
 
 class JobApplicationResultPage extends Component {
@@ -12,29 +11,28 @@ class JobApplicationResultPage extends Component {
 
 
   getApplicationDate=(i)=>{
-    var studentsapplied = this.props.studentList[i].studentsapplied;
+    var studentsapplied = this.props.jobs[i].studentsapplied;
     for (var idx =0 ; idx < studentsapplied.length ; ++idx) {
-      if (studentsapplied[idx].username === this.props.studentDetails.username) {
+      if (studentsapplied[idx].username === localStorage.getItem("username")) {
         return studentsapplied[idx].applicationdate;
       }
     }
   }
 
   getApplicationStatus=(i)=>{
-    var studentsapplied = this.props.studentList[i].studentsapplied;
+    var studentsapplied = this.props.jobs[i].studentsapplied;
     for (var idx =0 ; idx < studentsapplied.length ; ++idx) {
-      if (studentsapplied[idx].username === this.props.studentDetails.username) {
+      if (studentsapplied[idx].username === localStorage.getItem("username")) {
         return studentsapplied[idx].status;
       }
     }
   }
   listResults(){
-    // console.log("here",this.props.studentList);
-      const results = this.props.studentList.map((result, index) => {
+      const results = this.props.jobs.map((job, index) => {
          return ( 
           <React.Fragment>
               <tr>
-               <th scope="row" className="text-center">{result.title}</th>
+               <th scope="row" className="text-center">{job.title}</th>
                <td>{this.getApplicationDate(index)}</td>
                <td>{this.getApplicationStatus(index)}</td>
               </tr>
@@ -46,7 +44,7 @@ class JobApplicationResultPage extends Component {
  
   render() {
     return(
-      <React.Fragment>{this.props.studentList.length?<div>
+      <React.Fragment>{this.props.jobs.length?<div>
         <table className="table table-borderless table-hover">
          <thead className="thead-dark">
           <tr>
@@ -66,9 +64,4 @@ class JobApplicationResultPage extends Component {
 }
 
 
-function mapStateToProps(state) {
-  return {
-    studentDetails : state.login.studentDetails
-  }
-}
-export default connect(mapStateToProps, null)(JobApplicationResultPage);
+export default JobApplicationResultPage;

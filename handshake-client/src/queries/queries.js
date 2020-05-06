@@ -71,5 +71,18 @@ const getJobSearchQuery = gql`
     }
 `;
 
+const getJobsAppliedQuery = gql`
+  query getJobsAppliedQuery($username: String){
+      jobsapplied(username:$username) {
+        title,
+        studentsapplied {
+          username,
+          applicationdate,
+          status
+        }
+      }
+  }
+`;
 
-export { getStudentQuery, getEmployerQuery, getJobSearchQuery };
+
+export { getStudentQuery, getEmployerQuery, getJobSearchQuery, getJobsAppliedQuery };
