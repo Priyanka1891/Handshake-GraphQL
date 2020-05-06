@@ -73,7 +73,8 @@ class JobResultPage extends Component {
             renderOutput = [];
 
     if (this.state.viewjob) {
-      redirectVar = <Redirect to={{pathname : '/viewjobdetails',state: this.state.viewjob} }/>
+      console.log("Reached here", this.state.viewjob);
+      redirectVar = <Redirect to={{pathname : '/viewjobdetails', state: {job: this.state.viewjob} } }/>
     } 
 
     if (this.state && this.state.activePage) {

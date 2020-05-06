@@ -18,6 +18,7 @@ const Job =  {
     JobType : new GraphQLObjectType({
         name: 'Job',
         fields: () => ({
+            _id : {type : GraphQLString},
             title : {type: GraphQLString},
             createdate : {type: GraphQLString},
             enddate : {type: GraphQLString},

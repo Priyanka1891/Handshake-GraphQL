@@ -59,7 +59,7 @@ render() {
   let redirectVar = null;
   if (this.state.loginFlag) {
     localStorage.setItem("username", this.state.username);
-    redirectVar = <Redirect to={{pathname :"/studentprofilepage", state: {edit: true}}} />
+    redirectVar = <Redirect to="/studentprofilepage" />
   }
   else{
     redirectVar = <Redirect to="/student" />

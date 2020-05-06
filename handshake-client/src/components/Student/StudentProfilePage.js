@@ -1,23 +1,48 @@
 import React, {Component} from 'react';
-import { graphql } from 'react-apollo';
+// import { graphql } from 'react-apollo';
+import { withApollo } from 'react-apollo';
 import { getStudentQuery } from '../../queries/queries';
 import StudentNavbar from './StudentNavbar';
 import EmployerNavbar from '../Employer/EmployerNavbar'
 import Details from './Details';
 import Education from './Education';
 import Experience from './Experience';
+import { studentSignupMutation } from '../../mutation/mutations';
+
+const initialState={
+  reRender : false,
+  student : null
+}
 
 class StudentProfilePage extends Component {
   constructor(props) {
     super(props);
+    this.state = initialState;
   }
 
+  componentWillMount = async() => {
+    var username;
+    if (this.props.location.state) {
+      username = this.props.location.state.username;
+    } else {
+      username = localStorage.getItem('username');
+    }
+    const response =  await this.props.client.query({query: getStudentQuery, 
+                        variables : {
+                          username: username
+                        }
+                      });
+    this.setState({
+      student : response.data.student
+    })
+  }
  
   render() {
-    if (!this.props.data.student) {
+    if (!this.state.student) {
       return (<div/>)
     }
-    const edit  = (this.props.data.student.username === localStorage.getItem("username"));
+    const student = this.state.student;
+    const edit  = (student.username === localStorage.getItem("username"));
     return(
       <React.Fragment>
         {edit ? <StudentNavbar /> : <EmployerNavbar/>}
@@ -31,11 +56,11 @@ class StudentProfilePage extends Component {
               <div className="profile-sidebar">
                 <div className="profile-usertitle">
                   <div className="profile-usertitle-name">
-                    Welcome&nbsp;{this.props.data.student.username}
+                    Welcome&nbsp;{student.username}
                   </div>
                   <div className="profile-usertitle-job">
-                  {this.props.data.student.studentExperience.length ? 
-                    this.props.data.student.studentExperience[this.props.data.student.studentExperience.length-1].title : null}
+                  {student.studentExperience ? 
+                    student.studentExperience.title : null}
                   </div>
                 </div>
                 <div className="profile-usermenu">
@@ -68,9 +93,9 @@ class StudentProfilePage extends Component {
             <div className="col-md-offset-0">
               <div className="profile-content">
               <div className="col-md-offset-4">
-                <div id='Details'><Details edit={ edit } /></div>
-                <div id='Education'><Education edit={ edit } /></div>
-                <div id='Experience'><Experience edit={ edit } /></div>
+                <div id='Details'><Details edit={ edit } student={ student }/></div>
+                <div id='Education'><Education edit={ edit } student={ student } /></div>
+                <div id='Experience'><Experience edit={ edit } student={ student }/></div>
                 </div>
                 <br/>
                 </div> 
@@ -83,11 +108,13 @@ class StudentProfilePage extends Component {
 }
 
 
-export default graphql(getStudentQuery, {
-  options: () => {
-    return {variables: { username: localStorage.getItem("username") }}
-  }
-})(StudentProfilePage);
+export default withApollo(StudentProfilePage);
+
+// export default graphql(getStudentQuery, {
+//   options: () => {
+//     return {variables: { username: localStorage.getItem("username") }}
+//   }
+// })(StudentProfilePage);
 
 
 

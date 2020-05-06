@@ -105,7 +105,7 @@ class Editdetails extends Component{
   render() {
     let redirectVar = null;
     if (this.state.detailsSubmitted) {
-      redirectVar = <Redirect to={{pathname :"/studentprofilepage", state: {edit: true}}} />
+      redirectVar = <Redirect to="/studentprofilepage" />
     }
     if (!this.props.data.student) {
       return <div/>;

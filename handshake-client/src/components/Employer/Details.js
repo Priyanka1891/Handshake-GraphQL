@@ -1,10 +1,9 @@
 import React, {Component} from 'react';
-import {connect} from 'react-redux';
 import {Redirect} from 'react-router';
 
 
 const initialState={
-  editDetails : false
+  editDetails : false,
 }
 
 class Details extends Component{
@@ -14,6 +13,7 @@ class Details extends Component{
     this.state = initialState;
   }
 
+
   editEmployerDetails = (e) =>{
     this.setState({
       editDetails : true
@@ -22,6 +22,7 @@ class Details extends Component{
 
   render(){
       let redirectVar = null;
+      const employer = this.props.employer;
       if (this.state.editDetails) {
         redirectVar = <Redirect to="/editemployerdetails" />
       }
@@ -32,7 +33,7 @@ class Details extends Component{
         {redirectVar}
           <br />
                 <h2>Profile Overview</h2>
-                {this.props.editmode ?
+                {this.props.edit ?
                   (<button onClick={this.editEmployerDetails} type="button" className="btn btn-default btn-sm">
                   <span className="glyphicon glyphicon-pencil"></span>
                   </button>) : <div/>}
@@ -40,19 +41,19 @@ class Details extends Component{
               <br />
               <div className="form-group">
                 <label>Name :&nbsp;
-                {this.props.employerDetails.name}</label>
+                {employer.name}</label>
               </div>
               <div className="form-group">
                 <label>Location :&nbsp;
-                {this.props.employerDetails.location}</label>
+                {employer.location}</label>
               </div>
               <div className="form-group">
                 <label>Description :&nbsp;
-                  {this.props.employerDetails.description}</label>
+                  {employer.description}</label>
               </div>
               <div className="form-group">
                 <label>Contact Information :&nbsp;
-                {this.props.employerDetails.contactno}</label>
+                {employer.contactno}</label>
               </div>
           </div>
         </React.Fragment>
@@ -60,11 +61,5 @@ class Details extends Component{
     }
 }
 
-function mapStateToProps(state) {
-  return {
-    employerDetails : state.login.employerDetails
-  }
-}
+export default Details;
 
-// export default Details;
-export default connect(mapStateToProps, null)(Details);

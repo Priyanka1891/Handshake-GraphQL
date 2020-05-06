@@ -5,7 +5,7 @@ const {JobType} = require('./job');
 
 const {Users} = require('../dbSchema/UserModel');
 const {Employers} = require ('../dbSchema/EmployerModel');
-const {Jobs} = require('../dbSchema/JobModel');
+// const {Jobs} = require('../dbSchema/JobModel');
 
 const {studentlogin, studentsignup} = require('../mutations/student');
 const {updateStudentDetails, updateStudentEducationDetails,

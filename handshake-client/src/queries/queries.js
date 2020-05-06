@@ -36,9 +36,23 @@ const getStudentQuery = gql`
     }
 `;
 
+const getEmployerQuery = gql`
+  query($username: String){
+    employer(username:$username) {
+    username,
+    email,
+    location,
+    name,
+    description,
+    contactno
+    }
+  }
+`;
+
 const getJobSearchQuery = gql`
     query getJobSearchQuery($searchby: String){
         jobsearch(searchby: $searchby) {
+           _id, 
            title,
            createdate,
            enddate,
@@ -58,4 +72,4 @@ const getJobSearchQuery = gql`
 `;
 
 
-export { getStudentQuery, getJobSearchQuery };
+export { getStudentQuery, getEmployerQuery, getJobSearchQuery };

@@ -24,38 +24,35 @@ class Experience extends Component{
 
   render(){
       let redirectVar = null;
-      if (!this.props.data.student.studentExperience) {
-        return <div/>;
-      }
+      const student = this.props.student;
       if (this.state.editExperienceDetails) {
         redirectVar = <Redirect to='/editexperiencedetails'/>
       }
-      var studentExperience = null;
-      studentExperience= this.props.data.student.studentExperience;
 
       return(
         <React.Fragment>
         {redirectVar}
         <h2>Experience Overview&nbsp;&nbsp;&nbsp;{this.props.edit?(<button type="button" onClick={this.editStudentDetails} className="btn btn-default btn-sm"><span className="glyphicon glyphicon-pencil"></span>
                   </button>) :null} </h2>
-                  <label>Company Name :&nbsp;{studentExperience.companyname}</label>
+                  <label>Company Name :&nbsp;{student.studentExperience.companyname}</label>
                   <br />
-                  <label>Job Title :&nbsp;{studentExperience.title}</label>
+                  <label>Job Title :&nbsp;{student.studentExperience.title}</label>
                   <br />
-                  <label>Company Location :&nbsp;{studentExperience.companylocation}</label>
+                  <label>Company Location :&nbsp;{student.studentExperience.companylocation}</label>
                   <br />
-                  <label>Start Date :&nbsp;{studentExperience.startdate}</label>
+                  <label>Start Date :&nbsp;{student.studentExperience.startdate}</label>
                   &nbsp;&nbsp;-&nbsp;&nbsp;
-                  <label>End Date :&nbsp;{studentExperience.enddate}</label>
+                  <label>End Date :&nbsp;{student.studentExperience.enddate}</label>
                   <br />
-                  <label>Job Details :&nbsp;{studentExperience.jobdetails}</label>
+                  <label>Job Details :&nbsp;{student.studentExperience.jobdetails}</label>
         </React.Fragment>
         )
     }
 }
 
+export default Experience;
 
-export default graphql(getStudentQuery, {
-  options: () =>{
-      return {variables: { username: localStorage.getItem("username") }}
-  }})(Experience);
+// export default graphql(getStudentQuery, {
+//   options: () =>{
+//       return {variables: { username: localStorage.getItem("username") }}
+//   }})(Experience);

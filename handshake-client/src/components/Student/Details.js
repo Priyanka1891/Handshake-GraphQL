@@ -25,6 +25,7 @@ class Details extends Component{
       if (this.state.editDetails) {
         redirectVar = <Redirect to="/editdetails" />
       }
+      const student = this.props.student;
       return(
         <div>
         {redirectVar}
@@ -34,32 +35,32 @@ class Details extends Component{
                   <span className="glyphicon glyphicon-pencil"></span>
                   </button>):(<div></div>)} 
                 </h2> 
-                <label>Name : &nbsp;{this.props.data.student.basicDetails ?
-                this.props.data.student.basicDetails.name : null}</label>
+                <label>Name : &nbsp;{student.basicDetails ?
+                student.basicDetails.name : null}</label>
                 <br />
-                <label>Date Of Birth :&nbsp;{this.props.data.student.basicDetails ?
-                  this.props.data.student.basicDetails.dob : null}</label>
+                <label>Date Of Birth :&nbsp;{student.basicDetails ?
+                  student.basicDetails.dob : null}</label>
                 <br />
-                <label>City :&nbsp;{this.props.data.student.basicDetails ?
-                this.props.data.student.basicDetails.city : null}</label>
+                <label>City :&nbsp;{student.basicDetails ?
+                student.basicDetails.city : null}</label>
                 <br />
-                <label>State :&nbsp;{this.props.data.student.basicDetails ?
-                this.props.data.student.basicDetails.state : null }</label>
+                <label>State :&nbsp;{student.basicDetails ?
+                student.basicDetails.state : null }</label>
                 <br />
-                <label>Country :&nbsp;{this.props.data.student.basicDetails ?
-                this.props.data.student.basicDetails.country : null}</label>
+                <label>Country :&nbsp;{student.basicDetails ?
+                student.basicDetails.country : null}</label>
                 <br/>
-                <label>Contact No :&nbsp;{this.props.data.student.basicDetails ?
-                this.props.data.student.basicDetails.contactno : null}</label>
+                <label>Contact No :&nbsp;{student.basicDetails ?
+                student.basicDetails.contactno : null}</label>
                 <br/>
-                <label>Email:&nbsp;{this.props.data.student.email ?
-                this.props.data.student.email : null}</label>
+                <label>Email:&nbsp;{student.email ?
+                student.email : null}</label>
                 <br/>
-                <label>Skills :&nbsp;{this.props.data.student.basicDetails?
-                this.props.data.student.basicDetails.skills : null}</label>
+                <label>Skills :&nbsp;{student.basicDetails?
+                student.basicDetails.skills : null}</label>
                 <br/>
-                <label>Objective :&nbsp;{this.props.data.student.basicDetails ?
-                this.props.data.student.basicDetails.objective : null}</label>
+                <label>Objective :&nbsp;{student.basicDetails ?
+                student.basicDetails.objective : null}</label>
                 {/* <br /> */}
         </div>
         ) 
@@ -67,8 +68,9 @@ class Details extends Component{
 }
 
 
-export default graphql(getStudentQuery, {
-  options: () => {
-      return {variables: { username: localStorage.getItem("username") }};
-  }})(Details);
+export  default Details;
+// export default graphql(getStudentQuery, {
+//   options: () => {
+//       return {variables: { username: localStorage.getItem("username") }};
+//   }})(Details);
 

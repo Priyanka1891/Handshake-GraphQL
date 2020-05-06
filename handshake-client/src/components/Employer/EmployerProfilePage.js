@@ -1,15 +1,15 @@
 import React, {Component, createRef} from 'react';
-import {connect} from 'react-redux';
-import axios from 'axios';
+// import { graphql } from 'react-apollo';
+import { withApollo } from 'react-apollo';
+import { getEmployerQuery } from '../../queries/queries';
 import EmployerNavbar from './EmployerNavbar';
 import Details from  './Details';
-// import { fillEmployerDetails } from "../../common_store/actions/login";
-import { backendURL } from   "../../config"
 import StudentNavbar from '../Student/StudentNavbar';
-// var backendURL;
+
 
 const initialState={
-  reRender : false
+  reRender : false,
+  employer : null
 }
 var inputFile = createRef(null) 
 
@@ -20,46 +20,28 @@ class EmployerProfilePage extends Component {
     this.state = initialState;
   }
 
-  imageButtonHandler = (e)=> {
-    inputFile.current.click();
+  componentWillMount = async() => {
+    const response =  await this.props.client.query({query: getEmployerQuery, 
+                        variables : {
+                          username: this.props.location.state.username || localStorage.getItem('username')
+                        }
+                      });
+    console.log("Here ", response.data.employer);
+    this.setState({
+      employer : response.data.employer
+    })
   }
 
-  dispatch = async (state) => {
-    await this.props.fillEmployerDetails(state)
-    return this.props.employerDetails;
-  }
-
-  imageChangeHandler = (e) => {
-    if (!e.target.files[0]) {
-      window.alert("Image upload failed, either path is empty or some error happened");
-      return;
-    }
-    let file = e.target.files[0];
-    let reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = (e) => {
-      var employerDetails = this.props.employerDetails;
-      employerDetails.image = e.target.result;
-      const data = {details : employerDetails , upload_image : true};
-      axios.defaults.withCredentials = true;
-      axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
-      axios.post(`${backendURL}/employer/editdetails`, data)
-        .then(response => {
-          if (response.data.code===200) {
-            this.dispatch(employerDetails).then((result) => { 
-              this.setState({reRender: true})});
-            window.alert("Image uploaded successfully");
-          } else {
-            window.alert("Image upload failed");
-          }});
-      } 
-  }
 
   render() {
-    let viewMode = this.props.location.state && this.props.location.state.isStudent;
+    if (!this.state.employer) {
+      return <div/>
+    }
+    const employer = this.state.employer;
+    const edit  = (employer.username === localStorage.getItem("username"));
     return(
       <React.Fragment>
-        {  viewMode ? <StudentNavbar /> : <EmployerNavbar />}
+        {  edit ? <EmployerNavbar /> : <StudentNavbar />  }
         <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css" />
         <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js" />
         <script src="http://code.jquery.com/jquery-1.11.1.min.js" />
@@ -68,13 +50,7 @@ class EmployerProfilePage extends Component {
           <div className="row profile">
             <div className="col-md-3">
               <div className="profile-sidebar">
-              <div className="profile-userpic">
-                  {this.props.employerDetails.image ?
-                    <img src={this.props.employerDetails.image} className="img-responsive" alt="" /> :
-                    <img src="https://static.change.org/profile-img/default-user-profile.svg" className="img-responsive" alt="" />
-                  } 
-                </div> 
-                {!viewMode ?
+                {edit ?
                   (<div className="profile-userbuttons">
                     <input type='file' id='file' ref={inputFile} style={{display: 'none'}} onChange={this.imageChangeHandler}/>
                     <button onClick={this.imageButtonHandler} type="button" className="glyphicon glyphicon-camera btn btn-info">
@@ -83,7 +59,7 @@ class EmployerProfilePage extends Component {
                 }
                 <div className="profile-usertitle">
                   <div className="profile-usertitle-name">
-                    {this.props.employerDetails.username}
+                    {employer.username}
                   </div>
                 </div>
                 <div className="profile-usermenu">
@@ -102,7 +78,7 @@ class EmployerProfilePage extends Component {
             <div className="col-md-offset-0">
               <div className="profile-content">
               <div className="col-md-offset-4">
-                <div id='Details'><Details editmode ={!viewMode}/></div>
+                <div id='Details'><Details edit={edit} employer={employer}/></div>
               </div>
               </div>
             </div>
@@ -113,17 +89,9 @@ class EmployerProfilePage extends Component {
   }
 }
 
-
-function mapStateToProps(state) {
-  return {
-    employerDetails : state.login.employerDetails
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    // fillEmployerDetails : (details) => dispatch(fillEmployerDetails(details))
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(EmployerProfilePage);
+export default withApollo(EmployerProfilePage);
+// export default graphql(getEmployerQuery, {
+//   options: () => {
+//     return {variables: { username: localStorage.getItem("username")  }}
+//   }
+// })(EmployerProfilePage);
