@@ -26,7 +26,7 @@ class StudentList extends Component {
     })
   }
 
-  componentWillMount= async()=>{
+  componentDidMount= async()=>{
     const response =  await this.props.client.query({query: getStudentSearchQuery,
                                                      variables : {searchby:this.state.studentQuery}});
     this.setState({

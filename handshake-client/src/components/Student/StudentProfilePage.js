@@ -18,9 +18,9 @@ class StudentProfilePage extends Component {
     this.state = initialState;
   }
 
-  componentWillMount = async() => {
+  componentDidMount = async() => {
     var username;
-    if (this.props.location.state) {
+    if (this.props.location.state && this.props.location.state.username) {
       username = this.props.location.state.username;
     } else {
       username = localStorage.getItem('username');
