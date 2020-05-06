@@ -34,7 +34,6 @@ class JobResultPage extends Component {
 
   viewJob = (e) => {
     let jobdetails={};
-    console.log("Reached here with jobDetails as",this.props.jobDetails);
     for(let idx=0;idx<this.props.jobDetails.length;idx++){
       if(e.target.value===this.props.jobDetails[idx]._id){
         jobdetails=this.props.jobDetails[idx];
@@ -73,7 +72,6 @@ class JobResultPage extends Component {
             renderOutput = [];
 
     if (this.state.viewjob) {
-      console.log("Reached here", this.state.viewjob);
       redirectVar = <Redirect to={{pathname : '/viewjobdetails', state: {job: this.state.viewjob} } }/>
     } 
 
