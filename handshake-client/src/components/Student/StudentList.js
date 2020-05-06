@@ -28,7 +28,8 @@ class StudentList extends Component {
 
   componentDidMount= async()=>{
     const response =  await this.props.client.query({query: getStudentSearchQuery,
-                                                     variables : {searchby:this.state.studentQuery}});
+                                                     variables : {searchby:this.state.studentQuery},
+                                                     fetchPolicy: 'no-cache'});
     this.setState({
       studentList : response.data.studentsearch
     })

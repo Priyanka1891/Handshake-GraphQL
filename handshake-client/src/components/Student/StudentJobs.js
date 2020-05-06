@@ -29,7 +29,10 @@ class StudentJobs extends Component {
 
   listJobResults = async(e) => {
     e.preventDefault();
-    const response =  await this.props.client.query({query: getJobSearchQuery, variables : {searchby:this.state.searchQuery}});
+    const response =  await this.props.client.query({query: getJobSearchQuery, 
+                        variables : {searchby:this.state.searchQuery},
+                        fetchPolicy: 'no-cache'
+                        });
     this.setState({
       jobList : response.data.jobsearch
     })

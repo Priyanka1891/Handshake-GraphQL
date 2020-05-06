@@ -40,6 +40,6 @@ class StudentApplications extends Component {
 
 export default graphql(getJobsAppliedQuery, {
   options: () => {
-    return {variables: { username: localStorage.getItem("username") }}
+    return {variables: { username: localStorage.getItem("username") }, fetchPolicy: 'no-cache'}
   }
 })(StudentApplications);
