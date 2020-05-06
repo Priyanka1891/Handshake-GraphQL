@@ -21,9 +21,15 @@ class EmployerProfilePage extends Component {
   }
 
   componentWillMount = async() => {
+    var username;
+    if (this.props.location.state) {
+      username = this.props.location.state.username;
+    } else {
+      username = localStorage.getItem('username');
+    }
     const response =  await this.props.client.query({query: getEmployerQuery, 
                         variables : {
-                          username: this.props.location.state.username || localStorage.getItem('username')
+                          username: username
                         }
                       });
     console.log("Here ", response.data.employer);

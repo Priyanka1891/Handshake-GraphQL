@@ -53,5 +53,15 @@ const updateStudentExperienceDetailsMutation = gql`
         }
 `;
 
+const applyJobMutation = gql`
+    mutation applyJobMutation($username: String, $jobid: String){
+        applyJob(username: $username, jobid: $jobid){
+            message
+            status
+        }
+    }
+`;
+
 export {studentSignupMutation, studentLoginMutation, updateStudentDetailsMutation,
-        updateStudentEducationDetailsMutation,updateStudentExperienceDetailsMutation };
+        updateStudentEducationDetailsMutation,updateStudentExperienceDetailsMutation,
+        applyJobMutation};

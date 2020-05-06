@@ -11,7 +11,8 @@ const {studentlogin, studentsignup} = require('../mutations/student');
 const {updateStudentDetails, updateStudentEducationDetails,
        updateStudentExperienceDetails} = require('../mutations/student');
 
-const {jobSearchByQuery}  =  require('../queries/job')
+const {jobSearchByQuery}  =  require('../queries/job');
+const {applyJob} = require('../mutations/job');
 
 
 
@@ -138,6 +139,16 @@ const Mutation = new GraphQLObjectType({
                 return updateStudentExperienceDetails(args);
             }
         },
+        applyJob : {
+            type: StatusType,
+            args : {
+                username : {type: GraphQLString},
+                jobid : {type: GraphQLString}
+            },
+            resolve(parent, args) {
+                return applyJob(args);
+            }
+        }
     }
 });
 

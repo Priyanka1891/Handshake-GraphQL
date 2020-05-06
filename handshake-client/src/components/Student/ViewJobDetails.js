@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import StudentNavbar from './StudentNavbar';
 import {Redirect} from 'react-router';
 import { graphql } from 'react-apollo';
-import { studentLoginMutation } from '../../mutation/mutations';
+import { applyJobMutation } from '../../mutation/mutations';
 
 
 const initialState={
@@ -18,22 +18,18 @@ class ViewJobDetails extends Component {
     this.cancelJob = this.cancelJob.bind(this);
   }
  
-  applyJob = (e) =>{
+  applyJob = async(e) =>{
     e.preventDefault();
-    const data = {
-      jobId : this.props.location.state._id,
-      username : localStorage.getItem("username")
-    };
-    // axios.defaults.withCredentials = true;
-    // axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
-    // console.log("Sending Data "+ JSON.stringify(data));
-    // axios.post(`${backendURL}/jobs/jobsapplied`,data)
-    //   .then(response => {
-    //     console.log("Entered inside axios post req");
-    //     if(response.data){
-    //       window.alert(response.data);
-    //     }
-    // });
+    let mutationResponse = await this.props.applyJobMutation({
+      variables: {
+          username: localStorage.getItem("username"),
+          jobid: this.props.location.state.job._id,
+      }
+    });
+    let response = mutationResponse.data.applyJob;
+    if (response) {
+       window.alert(response.message);
+    }
   }
 
   redirectEmployerProfile = (e) => {
@@ -53,7 +49,7 @@ class ViewJobDetails extends Component {
     const job = this.props.location.state.job;
     if (this.state.canceljob) {
       redirectVar = <Redirect to='/studentjobs' />
-    }   
+    } 
     else if(this.state.renderemployer) {
       redirectVar = <Redirect to={{pathname: "/employerprofilepage", state: {username: job.username}}} />
     }
@@ -62,7 +58,7 @@ class ViewJobDetails extends Component {
           {redirectVar}
         <StudentNavbar/>
         <div className="container">
-          <h2>{this.props.location.state.title}</h2>
+          <h2>{job.title}</h2>
           <br />
           <div className="card">
            <div className="card-body">
@@ -91,7 +87,7 @@ class ViewJobDetails extends Component {
 }
 
 
-export default graphql(studentLoginMutation, { name: "studentLoginMutation" })(ViewJobDetails);
+export default graphql(applyJobMutation, { name: "applyJobMutation" })(ViewJobDetails);
 
 
 

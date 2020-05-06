@@ -1,4 +1,3 @@
-const { Users } = require("../dbSchema/UserModel");
 const { Jobs} = require("../dbSchema/JobModel");
 
 const job =

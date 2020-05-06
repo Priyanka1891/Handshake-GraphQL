@@ -39,7 +39,6 @@ class StudentJobs extends Component {
   render() {
     let resultPage = null;
     if (this.state.jobList) {
-      console.log(this.state.jobList);
       resultPage = (<JobResultPage jobDetails = {this.state.jobList}></JobResultPage>)
     }
     return(
