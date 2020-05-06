@@ -141,7 +141,9 @@ class EditExperiencedetails extends Component{
 
 export default compose(graphql(getStudentQuery, {
   options: () => {
-    return {variables: { username: localStorage.getItem("username")}};
+    return {variables: { username: localStorage.getItem("username")},
+            fetchPolicy: 'no-cache'
+           };
   }
 }),
 graphql(updateStudentExperienceDetailsMutation, { name: "updateStudentExperienceDetailsMutation" }))(EditExperiencedetails);

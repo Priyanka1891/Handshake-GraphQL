@@ -96,8 +96,3 @@ class EmployerProfilePage extends Component {
 }
 
 export default withApollo(EmployerProfilePage);
-// export default graphql(getEmployerQuery, {
-//   options: () => {
-//     return {variables: { username: localStorage.getItem("username")  }}
-//   }
-// })(EmployerProfilePage);

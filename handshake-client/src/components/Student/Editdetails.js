@@ -172,7 +172,9 @@ class Editdetails extends Component{
 
 export default compose(graphql(getStudentQuery, {
   options: () => {
-    return { variables: { username: localStorage.getItem("username") }};
+    return { variables: { username: localStorage.getItem("username") },
+             fetchPolicy: 'no-cache'
+            };
   }
 }),
 graphql(updateStudentDetailsMutation, { name: "updateStudentDetailsMutation" }))(Editdetails);

@@ -28,8 +28,10 @@ class StudentProfilePage extends Component {
     const response =  await this.props.client.query({query: getStudentQuery, 
                         variables : {
                           username: username
-                        }
+                        },
+                        fetchPolicy: 'no-cache'
                       });
+    console.log("RESPONSE ", response.data.student);
     this.setState({
       student : response.data.student
     })
