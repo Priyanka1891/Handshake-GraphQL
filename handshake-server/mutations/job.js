@@ -37,10 +37,19 @@ const job =
           await newJob.save();
           return { status: 200, message: "Job posted successfully" };
       } catch (err) {
-          console.error(err);
           return { status: 500, message: "Server error"};
       }
   },
+
+  updateApplicationStatus : async(args) => {
+    try {
+      await Jobs.updateOne({'_id' : args.jobid ,"studentsapplied.username": args.username},
+                           {$set : {"studentsapplied.$.status" : args.status}});
+      return { status: 200, message: "Status updated successfully" };               
+    } catch (err) {
+      return { status: 500, message: "Server error"};
+    }
+  }
    
  }
 

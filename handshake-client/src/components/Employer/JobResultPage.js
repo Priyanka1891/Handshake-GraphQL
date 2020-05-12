@@ -3,6 +3,7 @@ import {Redirect} from 'react-router';
 import {Row, Col, Pagination} from 'react-bootstrap';
 import { withApollo } from 'react-apollo';
 import { getJobDetails } from '../../queries/queries';
+import  { updateApplicationStatus } from '../../mutation/mutations'
 
 
 const initialState={
@@ -115,26 +116,35 @@ class JobResultPage extends Component {
     return students;
   }
 
-  updateApplicationStatus = (e) => {
+  updateApplicationStatus = async (e) => {
     e.preventDefault();
     let value = JSON.parse(e.target.value);
     const data = {
-      jobId : this.state.listStudentsApplied._id,
+      jobid : this.state.listStudentsApplied._id,
       username : value.job.username,
       status : value.status
     };
 
-    var listStudentsApplied = this.state.listStudentsApplied;
-    for (var idx =0; idx < listStudentsApplied.studentsapplied.length; ++idx) {
-      if (listStudentsApplied.studentsapplied[idx].username === data.username) {
-        listStudentsApplied.studentsapplied[idx].status = data.status;
-        break;
-      }
+    const response = await this.props.client.mutate({mutation: updateApplicationStatus,
+                                              variables : {
+                                                jobid : data.jobid,
+                                                username : data.username,
+                                                status : data.status
+                                              }});
+
+    if (response.data.updateApplicationStatus.status === "200") {  
+      var listStudentsApplied = this.state.listStudentsApplied;
+      for (var idx =0; idx < listStudentsApplied.studentsapplied.length; ++idx) {
+        if (listStudentsApplied.studentsapplied[idx].username === data.username) {
+          listStudentsApplied.studentsapplied[idx].status = data.status;
+          break;
+        }
+      }    
+
+      this.setState({
+        listStudentsApplied : listStudentsApplied
+      });
     }
-    
-    this.setState({
-      listStudentsApplied : listStudentsApplied
-    })
   }
 
   redirectStudentProfile = (e) => {

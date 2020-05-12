@@ -115,13 +115,6 @@ class StudentProfilePage extends Component {
 
 export default withApollo(StudentProfilePage);
 
-// export default graphql(getStudentQuery, {
-//   options: () => {
-//     return {variables: { username: localStorage.getItem("username") }}
-//   }
-// })(StudentProfilePage);
-
-
 
 
 

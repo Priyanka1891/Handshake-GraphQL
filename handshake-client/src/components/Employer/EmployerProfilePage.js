@@ -56,17 +56,15 @@ class EmployerProfilePage extends Component {
           <div className="row profile">
             <div className="col-md-3">
               <div className="profile-sidebar">
-                {edit ?
-                  (<div className="profile-userbuttons">
-                    <input type='file' id='file' ref={inputFile} style={{display: 'none'}} onChange={this.imageChangeHandler}/>
-                    {/* <button onClick={this.imageButtonHandler} type="button" className="glyphicon glyphicon-camera btn btn-info">
-                    </button> */}
-                  </div>) : <div/>
-                }
                 <div className="profile-usertitle">
-                  <div className="profile-usertitle-name">
+                  {edit ?
+                  (<div className="profile-usertitle-name">
+                    Welcome&nbsp;{employer.username}
+                  </div>)
+                  :
+                  (<div className="profile-usertitle-name">
                     {employer.username}
-                  </div>
+                  </div>) }
                 </div>
                 <div className="profile-usermenu">
                   <ul className="nav">

@@ -102,6 +102,16 @@ const postJobMutation = gql`
     }
 `;
 
-export {studentSignupMutation, studentLoginMutation, updateStudentDetailsMutation,
+const updateApplicationStatus = gql`
+  mutation updateApplicationStatus($jobid: String, $username: String, $status: String) {
+    updateApplicationStatus(jobid:$jobid, username:$username, status:$status) {
+      message,
+      status
+    }
+  }
+`;
+
+export { studentSignupMutation, studentLoginMutation, updateStudentDetailsMutation,
         updateStudentEducationDetailsMutation,updateStudentExperienceDetailsMutation,
-        applyJobMutation, employerLoginMutation,employerSignupMutation,updateEmployerDetailsMutation,postJobMutation};
+        applyJobMutation, employerLoginMutation,employerSignupMutation,updateEmployerDetailsMutation,
+        postJobMutation, updateApplicationStatus };
