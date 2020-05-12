@@ -3,6 +3,7 @@ const { Jobs} = require("../dbSchema/JobModel");
 const job =
  {
   jobSearchByQuery :  async(args) => {
+    // console.log("Reached here",args);
     var query={};
     if(args.searchby.length > 0) {
       query={$or: [{'title': {$regex: '.*' + args.searchby + '.*', $options:'i'}}, 

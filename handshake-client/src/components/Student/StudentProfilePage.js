@@ -31,7 +31,6 @@ class StudentProfilePage extends Component {
                         },
                         fetchPolicy: 'no-cache'
                       });
-    console.log("RESPONSE ", response.data.student);
     this.setState({
       student : response.data.student
     })

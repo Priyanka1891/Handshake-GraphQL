@@ -98,4 +98,18 @@ const getStudentSearchQuery = gql`
   }
 `;
 
-export { getStudentQuery, getEmployerQuery, getJobSearchQuery, getJobsAppliedQuery, getStudentSearchQuery };
+const getJobDetails = gql`
+  query getJobDetails($id: String){
+    jobDetailsByID(id: $id) {
+      _id,
+      studentsapplied {
+        username,
+        status,applicationdate
+      }
+    }
+  }
+`;
+
+
+export { getStudentQuery, getEmployerQuery, getJobSearchQuery, getJobsAppliedQuery, getStudentSearchQuery,
+         getJobDetails };

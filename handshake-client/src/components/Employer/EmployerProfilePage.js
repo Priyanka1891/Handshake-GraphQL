@@ -30,9 +30,9 @@ class EmployerProfilePage extends Component {
     const response =  await this.props.client.query({query: getEmployerQuery, 
                         variables : {
                           username: username
-                        }
+                        },
+                        fetchPolicy: 'no-cache'
                       });
-    console.log("Here ", response.data.employer);
     this.setState({
       employer : response.data.employer
     })
@@ -59,8 +59,8 @@ class EmployerProfilePage extends Component {
                 {edit ?
                   (<div className="profile-userbuttons">
                     <input type='file' id='file' ref={inputFile} style={{display: 'none'}} onChange={this.imageChangeHandler}/>
-                    <button onClick={this.imageButtonHandler} type="button" className="glyphicon glyphicon-camera btn btn-info">
-                    </button>
+                    {/* <button onClick={this.imageButtonHandler} type="button" className="glyphicon glyphicon-camera btn btn-info">
+                    </button> */}
                   </div>) : <div/>
                 }
                 <div className="profile-usertitle">

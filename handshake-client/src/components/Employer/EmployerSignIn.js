@@ -1,19 +1,13 @@
 import React, {Component} from 'react';
 import {Redirect} from 'react-router';
-import {connect} from 'react-redux';
-// import { fillEmployerDetails } from "../../common_store/actions/login";
-import axios from 'axios';
-// import { backendURL } from   "../../Utils/config"
-var backendURL;
-const jwt_decode = require('jwt-decode');
-
+import { graphql } from 'react-apollo';
+import { employerLoginMutation } from '../../mutation/mutations';
 
 const initialState={
   username : "",
-  password : "", 
-  token: ""
+  password : "",
+  loginFlag : false
 }
-
 
 class EmployerSignIn extends Component{
 
@@ -36,44 +30,39 @@ class EmployerSignIn extends Component{
       password : e.target.value,
     })
   }
-  dispatch = async (state) => {
-    await this.props.fillEmployerDetails(state)
-    return this.props.employerDetails;
-  }
 
-  login = (e) => {
+  login = async(e) => {
     e.preventDefault();
-    const data = {
-      username : this.state.username,
-      password : this.state.password,
-    }
-
-  axios.defaults.withCredentials = true;
-    console.log("Sending Data "+JSON.stringify(data));
-    axios.post(`${backendURL}/employer/signin`,data)
-    .then(response => {
-      console.log("Response received ", response);
-      this.dispatch(response.data.details)
-        .then(result => {
+    let mutationResponse = await this.props.employerLoginMutation({
+        variables: {
+            username: this.state.username,
+            password: this.state.password,
+        }
+    });
+    let response = mutationResponse.data.employerlogin;
+    if (response) {
+        if (response.status === "200") {
           this.setState({
-            token: response.data.value
+            loginFlag: true
           });
-          console.log("Employer details:", result);
-      });
-  })
-} 
+        } else {
+          window.alert(response.message);
+          this.setState({
+            loginFlag: false
+          });
+        }
+    }
+  } 
+
 render(){
  let redirectVar = null;
-    if (this.state.token.length > 0) {
-      localStorage.setItem("token", this.state.token);
-      var decoded = jwt_decode(this.state.token.split(' ')[1]);
-      localStorage.setItem("user_id", decoded._id);
-      localStorage.setItem("username", decoded.username);
-      redirectVar = <Redirect to="/employerprofilepage" />
-    }
-    else{
-      redirectVar = <Redirect to="/employer" />
-    }
+  if (this.state.loginFlag) {
+    localStorage.setItem("username", this.state.username);
+    redirectVar = <Redirect to="/employerprofilepage" />
+  }
+  else{
+    redirectVar = <Redirect to="/employer" />
+  }
     return(
       <div>
       {redirectVar}
@@ -117,18 +106,4 @@ render(){
     }
 }
 
-
-function mapStateToProps(state) {
-  return {
-    employerDetails : state.login.employerDetails
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    // fillEmployerDetails : (details) => dispatch(fillEmployerDetails(details))
-  }
-}
-// export Employer Sign In Component
-export default connect(mapStateToProps, mapDispatchToProps)(EmployerSignIn);
-
+export default graphql(employerLoginMutation, { name: "employerLoginMutation" })(EmployerSignIn);

@@ -5,15 +5,16 @@ const {JobType} = require('./job');
 
 const {Users} = require('../dbSchema/UserModel');
 const {Employers} = require ('../dbSchema/EmployerModel');
-// const {Jobs} = require('../dbSchema/JobModel');
+const {Jobs} = require('../dbSchema/JobModel');
 
 const {studentlogin, studentsignup, updateStudentDetails, updateStudentEducationDetails,
        updateStudentExperienceDetails} = require('../mutations/student');
 const {studentSearchByQuery} = require('../queries/student')
 
 const {jobSearchByQuery, jobSearchByApplicantApplied}  =  require('../queries/job');
-const {applyJob} = require('../mutations/job');
+const {applyJob,postJob} = require('../mutations/job');
 
+const {employerlogin,employersignup,updateEmployerDetails} = require('../mutations/employer');
 
 
 const {
@@ -66,6 +67,16 @@ const RootQuery = new GraphQLObjectType({
             args : {searchby : {type : GraphQLString}},
             async resolve(parent, args) {
                 return studentSearchByQuery(args);
+            }
+        },
+        jobDetailsByID : {
+            type : JobType,
+            args : {id : {type : GraphQLString} },
+            async resolve(parent, args) {
+                let job = await Jobs.findById(args.id);
+                if (job) {
+                    return job;
+                }
             }
         }
     }
@@ -162,7 +173,59 @@ const Mutation = new GraphQLObjectType({
             resolve(parent, args) {
                 return applyJob(args);
             }
+        },
+        postJob : {
+          type: StatusType,
+          args: {
+            title : { type: GraphQLString},
+            createdate :  { type: GraphQLString},
+            enddate : {type: GraphQLString},
+            location : { type: GraphQLString},
+            salary : { type: GraphQLString},
+            description :  { type: GraphQLString},
+            type : {type: GraphQLString},
+            createdby : { type: GraphQLString},
+            username : { type : GraphQLString}
+          },
+          resolve(parent, args) {
+              return postJob(args);
+          }
+        },
+        employerlogin: {
+          type: StatusType,
+          args: {
+              username: { type: GraphQLString },
+              password: { type: GraphQLString },
+          },
+          resolve(parent, args) {
+              return employerlogin(args);
+          }
+        },
+        employersignup: {
+          type: StatusType,
+          args: {
+            username: { type: GraphQLString},
+            password:  { type: GraphQLString},
+            email: {type: GraphQLString},
+            location: { type: GraphQLString}
+          },
+          resolve(parent, args) {
+              return employersignup(args);
+          }
+        },
+        updateEmployerDetails: {
+          type: StatusType,
+          args: {
+              username : {type : GraphQLString},
+              name : {type : GraphQLString},
+              location : {type : GraphQLString},
+              contactno : {type : GraphQLString},
+              description : {type : GraphQLString},
+          },
+        resolve(parent, args) {
+            return updateEmployerDetails(args);
         }
+      },
     }
 });
 

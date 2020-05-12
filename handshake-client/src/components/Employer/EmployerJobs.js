@@ -1,20 +1,15 @@
 import React, {Component} from 'react';
 import EmployerNavbar from './EmployerNavbar';
-import axios from 'axios';
-import {connect} from 'react-redux';
 import JobResultPage from './JobResultPage';
 import {Redirect} from 'react-router';
-// import { fillBothDetails } from "../../common_store/actions/login";
-// import { fillJobDetailsList } from '../../common_store/actions/job'
-import { backendURL } from   "../../config"
-
-
+import { withApollo } from 'react-apollo';
+import {getEmployerQuery, getJobSearchQuery } from '../../queries/queries';
 
 
 const initialState={
   postNewJob : false,
   jobQuery : null,
-  jobsList : null,
+  jobList : null,
 }
 
 class EmployerJobs extends Component {
@@ -27,34 +22,25 @@ class EmployerJobs extends Component {
   }
 
 
-  listJobResults = (e) => {
+  listJobResults = async(e) => {
     e.preventDefault();
-    var payload = {studentDetails : null , employerDetails : this.props.employerDetails};
-    this.props.fillBothDetails(payload);
-    const data = {
-      jobQuery : this.props.employerDetails.name,
-    };
-    if (!this.props.employerDetails.name) {
-      window.alert('Please login and try again..');
-      return;
-    }
-    axios.defaults.withCredentials = true;
-    axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
-    console.log("Sending Data for job search"+ JSON.stringify(data));
-    axios.post(`${backendURL}/jobs/jobsearch`,data)
-      .then(response => {
-        console.log("Result job search :", response.data)
-        this.props.fillJobDetailsList(response.data);
-        this.setState({
-          jobsList : response.data
-        });
+    var response =  await this.props.client.query({query: getEmployerQuery, 
+      variables : {
+        username: localStorage.getItem('username')
+      },
+      fetchPolicy: 'no-cache'
     });
+    response =  await this.props.client.query({query: getJobSearchQuery, 
+                        variables : {searchby : response.data.employer.name},
+                        fetchPolicy: 'no-cache'
+                      });
+    this.setState({
+    jobList : response.data.jobsearch
+    })
   }
   
   postJob = (e) => {
     e.preventDefault();
-    var payload = {studentDetails : null , employerDetails : this.props.employerDetails};
-    this.props.fillBothDetails(payload);
     this.setState({
       postNewJob : true
     })
@@ -62,7 +48,9 @@ class EmployerJobs extends Component {
 
   render() {
     let resultPage = null;
-    resultPage = this.state.jobsList ? (<JobResultPage jobDetails = {this.state.jobsList}></JobResultPage>) : null;
+    if(this.state.jobList){
+      resultPage = this.state.jobList ? (<JobResultPage jobDetails = {this.state.jobList}></JobResultPage>) : null;
+    }
 
     let redirectVar = null;
     if (this.state.postNewJob) {
@@ -96,20 +84,5 @@ class EmployerJobs extends Component {
   }
 }
 
-
-function mapStateToProps(state) {
-  return {
-    employerDetails : state.login.employerDetails
-  }
-}
-
-
-function mapDispatchToProps(dispatch) {
-  return {
-    // fillBothDetails : (details) => dispatch(fillBothDetails(details)),
-    // fillJobDetailsList : (details) => dispatch(fillJobDetailsList(details))
-  }
-}
-export default connect(mapStateToProps, mapDispatchToProps)(EmployerJobs);
-
+export default withApollo(EmployerJobs);
 

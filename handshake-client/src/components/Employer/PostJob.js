@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
 import {Redirect} from 'react-router';
-import {connect} from 'react-redux';
-import axios from 'axios';
-import { backendURL } from   "../../config"
+import { graphql, compose } from 'react-apollo';
+import {postJobMutation } from '../../mutation/mutations';
+import {getEmployerQuery} from '../../queries/queries';
+
 
 const initialState={
   jobPosted : false,
@@ -21,7 +22,7 @@ class PostJob extends Component{
   constructor(props){
       super(props);
       this.state= initialState;
-      this.state.companyname = this.props.employerDetails.name;
+      // this.state.companyname = this.props.employerDetails.name;
       this.jobTitleChangeHandler = this.jobTitleChangeHandler.bind(this);
       this.createDateChangeHandler = this.createDateChangeHandler.bind(this);
       this.endDateChangeHandler = this.endDateChangeHandler.bind(this);
@@ -74,40 +75,50 @@ class PostJob extends Component{
     })
   }
 
-  postJobDetails = (e) => {
+  postJobDetails = async(e) => {
     e.preventDefault();
     for (let [key, value] of Object.entries(this.state)) {
-      if (key === 'jobPosted') continue;
+      if (key === 'jobPosted' || key === 'companyname') continue;
       if (!value) {
         var msg;
-        if (key === 'companyname') msg = 'Please login and try again...';
-        else msg = 'Enter all required fields';
+        msg = 'Enter all required fields';
         window.alert(msg);
         return;
       }
     }
-
-    axios.defaults.withCredentials = true;
-    axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
-    const data = {...this.state,
-      username : this.props.employerDetails.username};
-    console.log("Sending Data ", data);
-    axios.post(`${backendURL}/jobs/postjob`, data)
-      .then(response => {
-        console.log("Edit Response: ", response);
-        if (response.status === 200) {
-          this.setState({
-            jobPosted : true
-          });
-          window.alert("Job posted successfully")
-        }
+    
+    let mutationResponse = await this.props.postJobMutation({
+      variables: {
+          username: localStorage.getItem('username'),
+          createdby : this.props.data.employer.name,
+          title: this.state.title,
+          location : this.state.location,
+          createdate : this.state.createdate,
+          enddate : this.state.enddate,
+          description : this.state.description,
+          type : this.state.type,
+          salary : this.state.salary
+      }
     });
+    console.log(mutationResponse);
+    const response = mutationResponse.data.postJob;
+    if (response) {
+        if (response.status === "200") {
+          this.setState({
+            jobPosted: true
+          });
+          window.alert(response.message);
+        } 
+    }
   }
 
   render() {
     let redirectVar = null;
     if (this.state.jobPosted) {
       redirectVar = <Redirect to="/employerjobs" />
+    }
+    if (!this.props.data.employer) {
+      return <div/>;
     }
     return(
       <div>
@@ -167,11 +178,12 @@ class PostJob extends Component{
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    employerDetails : state.login.employerDetails
-  }
-}
 
-// export default PostJob;
-export default connect(mapStateToProps, null)(PostJob);
+export default compose(graphql(getEmployerQuery, {
+  options: () => {
+    return { variables: { username: localStorage.getItem("username") },
+             fetchPolicy: 'no-cache'
+            };
+  }
+}),
+graphql(postJobMutation, { name: "postJobMutation" }))(PostJob);

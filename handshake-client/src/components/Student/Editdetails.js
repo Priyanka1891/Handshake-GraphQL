@@ -32,7 +32,7 @@ class Editdetails extends Component{
       this.contactnoChangeHandler = this.contactnoChangeHandler.bind(this);
       this.submitStudentDetails = this.submitStudentDetails.bind(this);
       this.skillsChangeHandler = this.skillsChangeHandler.bind(this);
-
+      
   }
 
   nameChangeHandler = (e) => {

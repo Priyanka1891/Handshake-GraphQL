@@ -62,6 +62,46 @@ const applyJobMutation = gql`
     }
 `;
 
+const employerLoginMutation = gql`
+    mutation employerlogin($username: String, $password: String){
+        employerlogin(username: $username, password: $password){
+            message
+            status
+        }
+    }
+`;
+
+const employerSignupMutation = gql`
+    mutation employersignup($username: String, $password: String, $email: String, $location : String){
+        employersignup(username: $username, password: $password, email: $email, location : $location){
+            message
+            status
+        }
+    }
+`;
+
+const updateEmployerDetailsMutation = gql`
+    mutation updateEmployerDetails($username: String, $location: String,
+        $name: String, $contactno: String, $description: String){
+        updateEmployerDetails(username: $username,  name: $name, contactno : $contactno,
+            description: $description,location : $location){
+            message
+            status
+        }
+    }
+`;
+
+const postJobMutation = gql`
+    mutation postJob($username: String,$createdby: String, $location: String, $type: String
+        $enddate: String, $createdate: String, $description: String, $title: String, $salary: String){
+        postJob(username : $username,createdby : $createdby,location : $location, type : $type
+          enddate : $enddate , createdate: $createdate, description : $description, title : $title , salary: $salary){
+            message
+            status
+        }
+    }
+`;
+
 export {studentSignupMutation, studentLoginMutation, updateStudentDetailsMutation,
         updateStudentEducationDetailsMutation,updateStudentExperienceDetailsMutation,
-        applyJobMutation};
+        applyJobMutation, employerLoginMutation,employerSignupMutation,updateEmployerDetailsMutation,postJobMutation};

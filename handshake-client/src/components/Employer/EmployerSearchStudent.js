@@ -1,15 +1,13 @@
 import React, {Component} from 'react';
-import EmployerNavbar from './EmployerNavbar';
-import axios from 'axios';
-import {connect} from 'react-redux';
+import  EmployerNavbar from './EmployerNavbar';
 import SearchedStudentResultPage from './SearchedStudentResultPage';
-// import { fillBothDetails } from "../../common_store/actions/login";
-import { backendURL } from   "../../config"
+import { withApollo } from 'react-apollo';
+import { getStudentSearchQuery } from '../../queries/queries';
 
 
 
 const initialState={
-  studentQuery : null,
+  studentQuery : "",
   studentList : null,
 }
 
@@ -19,6 +17,7 @@ class EmployerSearchStudent extends Component {
     super(props);
     this.state = initialState;
     this.listStudentResults = this.listStudentResults.bind(this);
+    this.queryChangeHandler = this.queryChangeHandler.bind(this);
   }
 
   queryChangeHandler = (e) => {
@@ -27,30 +26,30 @@ class EmployerSearchStudent extends Component {
     })
   }
 
-  listStudentResults = (e) => {
-    e.preventDefault();
-    var payload = {studentDetails : null , employerDetails : this.props.employerDetails};
-    this.props.fillBothDetails(payload);
-    const data = {
-      studentQuery : this.state.studentQuery,
-    };
-    axios.defaults.withCredentials = true;
-    axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
-    console.log("Sending Data "+JSON.stringify(data));
-    axios.post(`${backendURL}/jobs/studentsearch`, data)
-      .then(response => {
-        console.log("Result students :", response.data)
-        this.setState({
-          studentList : response.data
-        })
-    })
+  componentDidMount= async()=>{
+    // const response =  await this.props.client.query({query: getStudentSearchQuery,
+    //                                                  variables : {searchby:this.state.studentQuery},
+    //                                                  fetchPolicy: 'no-cache'});
+    // this.setState({
+    //   studentList : response.data.studentsearch
+    // })
   }
 
+  listStudentResults = async(e) => {
+    e.preventDefault();
+    const response =  await this.props.client.query({query: getStudentSearchQuery,
+                                                    variables : {searchby:this.state.studentQuery}});
+    this.setState({
+      studentList : response.data.studentsearch
+    })
+   
+  }
 
   render() {
     let resultPage = null;
-    resultPage = this.state.studentList ? (<SearchedStudentResultPage studentList = {this.state.studentList}></SearchedStudentResultPage>) : null;
-
+    if (this.state.studentList) {
+      resultPage = (<SearchedStudentResultPage students = {this.state.studentList}></SearchedStudentResultPage>);
+    }  
     return(
       <React.Fragment>
         <EmployerNavbar />
@@ -66,8 +65,8 @@ class EmployerSearchStudent extends Component {
                 <label>Student Search:</label>
                 <br />
                 <input onChange = {this.queryChangeHandler} 
-                    type ='text' style={{width:'70%'}} placeholder="Enter Student Name or College Name or Skill to Search"/>
-                <button type='submit'onClick={this.listStudentResults}><i className="fa fa-search"></i></button>
+                    type ='text' style={{width:'70%'}} placeholder="Enter Student Name or College Name to Search"/>&nbsp;&nbsp;
+                <button  className="btn btn-success" type='submit'onClick={this.listStudentResults}><i className="fa fa-search"></i></button>
                 <br />
                 <br />
                 {resultPage}
@@ -81,17 +80,4 @@ class EmployerSearchStudent extends Component {
 }
 
 
-function mapStateToProps(state) {
-  return {
-    employerDetails : state.login.employerDetails,
-    studentDetails : state.login.studentDetails
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    // fillBothDetails : (details) => dispatch(fillBothDetails(details))
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(EmployerSearchStudent);
+export default withApollo(EmployerSearchStudent);

@@ -1,13 +1,15 @@
 import React, {Component} from 'react';
 import {Redirect} from 'react-router';
-import {connect} from 'react-redux';
-import axios from 'axios';
-// import { fillEmployerDetails } from "../../common_store/actions/login";
-import { backendURL } from   "../../config"
+import { graphql, compose } from 'react-apollo';
+import { getEmployerQuery} from '../../queries/queries';
+import { updateEmployerDetailsMutation } from '../../mutation/mutations';
 
 const initialState={
   detailsSubmitted : false,
-  employerDetails : {}
+  name : null,
+  location : null,
+  description : null,
+  contactno : null,
 }
 
 class EditEmployerDetails extends Component{
@@ -15,69 +17,70 @@ class EditEmployerDetails extends Component{
   constructor(props){
       super(props);      
       this.state = initialState;
-      this.state.employerDetails = this.props.employerDetails;
       this.nameChangeHandler = this.nameChangeHandler.bind(this);
       this.locationChangeHandler = this.locationChangeHandler.bind(this);
       this.descriptionChangeHandler = this.descriptionChangeHandler.bind(this);
       this.contactNoChangeHandler = this.contactNoChangeHandler.bind(this);
       this.submitEmployerDetails = this.submitEmployerDetails.bind(this);
+
   }
 
   nameChangeHandler = (e) => {
-    var employerDetails = {...this.state.employerDetails}
-    employerDetails.name = e.target.value;
-    this.setState({employerDetails})
+    this.setState({name : e.target.value});
   }
 
   locationChangeHandler = (e) => {
-    var employerDetails = {...this.state.employerDetails}
-    employerDetails.location = e.target.value;
-    this.setState({employerDetails})
+    this.setState({location : e.target.value});
   }
 
   descriptionChangeHandler = (e) => {
-    var employerDetails = {...this.state.employerDetails}
-    employerDetails.description = e.target.value;
-    this.setState({employerDetails})
+    this.setState({description : e.target.value});
   }
 
   contactNoChangeHandler = (e) => {
-    var employerDetails = {...this.state.employerDetails}
-    employerDetails.contactno= e.target.value;
-    this.setState({employerDetails})
+    this.setState({contactno : e.target.value})
   }
 
-  dispatch = async (state) => {
-    await this.props.fillEmployerDetails(state)
-    return this.props.employerDetails;
-  }
-
-  submitEmployerDetails = (e) => {
+  submitEmployerDetails = async(e) => {
     e.preventDefault();
-    axios.defaults.withCredentials = true;
-    axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
-    console.log("Sending Data ", this.state.employerDetails);
-    const data = {details : this.state.employerDetails , edit_details : true}
-    axios.post(`${backendURL}/employer/editdetails`, data)
-      .then(response => {
-        console.log("Edit Response: ", response);
-        if (response.status === 200) {
-          this.dispatch(this.state.employerDetails)
-            .then(result => {
-              this.setState({
-                detailsSubmitted : true
-              })
-             console.log("Edited details: ", result);
-            })
+    let employer;
+    if (this.props.data.employer) {
+        employer = this.props.data.employer;
+    }
+
+    let mutationResponse = await this.props.updateEmployerDetailsMutation({
+        variables: {
+            username : localStorage.getItem('username'),
+            name : this.state.name || employer.name,
+            location: this.state.location || employer.location,
+            description: this.state.description || employer.description,
+            contactno : this.state.contactno || employer.contactno
         }
     });
+    let response = mutationResponse.data.updateEmployerDetails;
+    if (response) {
+        if (response.status === "200") {
+            this.setState({
+                detailsSubmitted: true
+            });
+        }
+    }
   }
 
+
+
   render() {
+    console.log("Here",this.props);
     let redirectVar = null;
     if (this.state.detailsSubmitted) {
       redirectVar = <Redirect to="/employerprofilepage" />
     }
+    if (!this.props.data.employer) {
+      return <div/>;
+    }
+
+    const employerDetails = this.props.data.employer;
+
     return(
       <div>
       {redirectVar}
@@ -91,22 +94,26 @@ class EditEmployerDetails extends Component{
               </div>
               <div className="form-group">
                 <label>Name</label>
-                <input onChange = {this.nameChangeHandler}value={this.state.name} placeholder={this.props.employerDetails.name}
+                <input onChange = {this.nameChangeHandler} value={this.state.name}
+                placeholder={employerDetails?employerDetails.name:null}
                 type="text" className="form-control" />
               </div>
               <div className="form-group">
                 <label>Location</label>
-                <input onChange = {this.locationChangeHandler}value={this.state.location} placeholder={this.props.employerDetails.location}
+                <input onChange = {this.locationChangeHandler} value={this.state.location} 
+                placeholder={employerDetails?employerDetails.location:null}
                 type="text" className="form-control" />
               </div>
               <div className="form-group">
                 <label>Description</label>
-                <input onChange = {this.descriptionChangeHandler}value={this.state.description} placeholder={this.props.employerDetails.description}
+                <input onChange = {this.descriptionChangeHandler} value={this.state.description} 
+                placeholder={employerDetails?employerDetails.description:null}
                 type="text" className="form-control"/>
               </div>
               <div className="form-group">
                 <label>Contact No.</label>
-                <input onChange = {this.contactNoChangeHandler}value={this.state.contactno} placeholder={this.props.employerDetails.contactno} 
+                <input onChange = {this.contactNoChangeHandler}value={this.state.contactno} 
+                placeholder={employerDetails?employerDetails.contactno:null} 
                 type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
                 required className="form-control" />
               </div>
@@ -120,17 +127,11 @@ class EditEmployerDetails extends Component{
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    employerDetails : state.login.employerDetails
+export default compose(graphql(getEmployerQuery, {
+  options: () => {
+    return { variables: { username: localStorage.getItem("username") },
+             fetchPolicy: 'no-cache'
+            };
   }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    // fillEmployerDetails : (details) => dispatch(fillEmployerDetails(details))
-  }
-}
-
-// export default EditEmployerDetails;
-export default connect(mapStateToProps, mapDispatchToProps)(EditEmployerDetails);
+}),
+graphql(updateEmployerDetailsMutation, { name: "updateEmployerDetailsMutation" }))(EditEmployerDetails);

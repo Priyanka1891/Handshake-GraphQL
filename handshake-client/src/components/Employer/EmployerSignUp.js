@@ -1,11 +1,8 @@
 import React, {Component} from 'react';
 import {Redirect} from 'react-router';
-import {connect} from 'react-redux';
-import axios from 'axios';
-// import { fillEmployerDetails } from "../../common_store/actions/login";
-// import { backendURL } from   "../../Utils/config"
+import { graphql } from 'react-apollo';
+import { employerSignupMutation } from '../../mutation/mutations';
 
-var backendURL;
 const initialState={
   username : "",
   password : "",
@@ -49,24 +46,25 @@ class EmployerSignUp extends Component{
     })
   }
   
-  submitDetails = (e) => {
+  submitDetails = async(e) => {
     e.preventDefault();
-    const data = {
-      username : this.state.username,
-      password : this.state.password,
-      email : this.state.email,
-      location : this.state.location
+    let mutationResponse = await this.props.employerSignupMutation({
+      variables: {
+          username: this.state.username,
+          password: this.state.password,
+          email: this.state.email,
+          location : this.state.location
+      }
+    });
+    let response = mutationResponse.data.employersignup;
+    if (response) {
+        if (response.status === "200") {
+          this.setState({
+            signUpDone: true
+          });
+          window.alert(response.message);
+        } 
     }
-
-  axios.defaults.withCredentials = true;
-  console.log("Sending Data " + JSON.stringify(data));
-    axios.post(`${backendURL}/employer/signup`,data)
-      .then(response => {
-        this.setState({
-          signUpDone : true
-        });
-        window.alert(response.data);
-      });
   }
   render(){
     let redirectVar = null;
@@ -117,20 +115,8 @@ class EmployerSignUp extends Component{
         </div>
         )
     }
-}
 
-// export Student Sign Up Component
 
-function mapStateToProps(state) {
-  return {
-    employerDetails : state.login.employerDetails
-  }
 }
-  
-function mapDispatchToProps(dispatch) {
-  return {
-    // fillEmployerDetails : (details) => dispatch(fillEmployerDetails(details))
-  }
-}
-  // export EMployer Sign Up Component
-export default connect(mapStateToProps, mapDispatchToProps)(EmployerSignUp);
+  // export Employer Sign Up Component
+  export default graphql(employerSignupMutation, { name: "employerSignupMutation" })(EmployerSignUp);

@@ -1,14 +1,13 @@
 import React, {Component} from 'react';
-import axios from 'axios';
 import {Redirect} from 'react-router';
-import {connect} from 'react-redux';
-// import { fillBothDetails } from "../../common_store/actions/login";
-import { backendURL } from   "../../config"
 import {Row, Col, Pagination} from 'react-bootstrap';
+import { withApollo } from 'react-apollo';
+import { getJobDetails } from '../../queries/queries';
 
 
 const initialState={
   listStudentsApplied : null,
+  studentusername : null,
   activePage: 1
 }
 
@@ -46,44 +45,19 @@ class JobResultPage extends Component {
     });
   };  
 
-  getStudentDetails = (e) => {
+  getStudentDetails = async (e) => {
     e.preventDefault();
-    const data = {
-      jobId : e.target.value,
-    };
-    axios.defaults.withCredentials = true;
-    axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
-    console.log("Sending Data "+ JSON.stringify(data));
-    axios.post(`${backendURL}/jobs/studentsapplied`,data)
-      .then(response => {
-        this.setState({
-          listStudentsApplied : response.data,
-        });
-    });
+    var jobId = e.target.value;
+    const response = await this.props.client.query({query: getJobDetails, 
+                              variables : {
+                                id: jobId
+                              },
+                              fetchPolicy: 'no-cache'
+                      });
+    this.setState({
+      listStudentsApplied :  response.data.jobDetailsByID
+    })
   }
-
-
-  // searchedJobs = () => {
-  //     if (this.state.listStudentsApplied) {
-  //       return <div></div>
-  //     }
-  //     const jobs = this.props.jobDetails.map((job, index) => {
-  //        return ( 
-  //               // <div key={job._id}>
-              //   <tr>
-              //   <th scope="row" className="text-center">{job.title}</th>
-              //   <td>{job.createdby}</td>
-              //   <td>{job.location}</td>
-              //   <td>{job.salary}</td>
-              //   <td>{job.type}</td>
-              //   <td>{job.createdate}</td>
-              //   <td>{job.enddate}</td>
-              //   <td><button type="submit" value={job._id} className="btn btn-link" onClick={this.getStudentDetails}>View Details</button></td>
-              // </tr>
-  //          );
-  //    });
-  //    return jobs;
-  // }
 
   sectionItems (jobDetails) {
     if (this.state.listStudentsApplied) { return <div/> }
@@ -149,53 +123,37 @@ class JobResultPage extends Component {
       username : value.job.username,
       status : value.status
     };
-    var updatedList = this.state.listStudentsApplied;
-    for (var idx = 0; idx < updatedList.studentsapplied.length; ++idx) {
-      if (updatedList.studentsapplied[idx].username === data.username){
-        updatedList.studentsapplied[idx].status = data.status;
+
+    var listStudentsApplied = this.state.listStudentsApplied;
+    for (var idx =0; idx < listStudentsApplied.studentsapplied.length; ++idx) {
+      if (listStudentsApplied.studentsapplied[idx].username === data.username) {
+        listStudentsApplied.studentsapplied[idx].status = data.status;
+        break;
       }
     }
-    axios.defaults.withCredentials = true;
-    console.log("Sending Data "+ JSON.stringify(data));
-    axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
-    axios.post(`${backendURL}/jobs/updatejobstatus`,data)
-      .then(response => {
-        console.log("Result update :", response.data)
-        this.setState({
-          listStudentsApplied : updatedList
-        });
-    });
+    
+    this.setState({
+      listStudentsApplied : listStudentsApplied
+    })
   }
 
   redirectStudentProfile = (e) => {
-    const data ={
-      username : e.target.value,
-      editmode : false
-    };
-    console.log("Data being sent is"+JSON.stringify(data));
-    axios.post(`${backendURL}/student/signin`,data)
-      .then(response=>{
-        console.log("Entered inside axios post req", response);
-        if(response.data.details){
-          const newStudentDetails={...response.data.details,
-              editmode : false
-          }
-          const bothDetails = {studentDetails : newStudentDetails, employerDetails : this.props.employerDetails};
-          this.props.fillBothDetails(bothDetails);
-        }
-      })
+   this.setState({
+     studentusername : e.target.value
+   })
   }
 
   render() {
     let redirectVar = null,
             section,
             active = 1,
-            itemsToShow = 2,
+            itemsToShow = 4,
             pagesBar = null,
             renderOutput = [];
 
-    if (this.props.studentDetails) {
-      redirectVar = <Redirect to = '/studentprofilepage' />
+    if (this.state.studentusername) {
+      redirectVar = <Redirect to={{pathname: "/viewstudentprofilepage", 
+                                  state: {username: this.state.studentusername, employer: true}}} />
     }
 
     if (this.state && this.state.activePage) {
@@ -267,15 +225,4 @@ class JobResultPage extends Component {
   }    
 }
 
-function mapStateToProps(state) {
-  return {
-    employerDetails : state.login.employerDetails,
-    studentDetails : state.login.studentDetails
-  }
-}
-function mapDispatchToProps(dispatch) {
-  return {
-    // fillBothDetails : (details) => dispatch(fillBothDetails(details))
-  }
-}
-export default connect(mapStateToProps, mapDispatchToProps)(JobResultPage);
+export default withApollo(JobResultPage);

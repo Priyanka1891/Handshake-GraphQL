@@ -21,6 +21,26 @@ const job =
         return {status: 500, message: "Server error"};
       }
     },
+    postJob : async (args) => {
+      try {
+      var newJob  = new Jobs({ 
+                       title : args.title,
+                       createdate : args.createdate,
+                       enddate : args.enddate,
+                       location : args.location,
+                       salary : args.salary,
+                       description : args.description,
+                       type : args.type,
+                       createdby : args.createdby,
+                       username : args.username
+                      });
+          await newJob.save();
+          return { status: 200, message: "Job posted successfully" };
+      } catch (err) {
+          console.error(err);
+          return { status: 500, message: "Server error"};
+      }
+  },
    
  }
 

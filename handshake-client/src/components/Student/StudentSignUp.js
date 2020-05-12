@@ -49,15 +49,15 @@ colgnameChangeHandler = (e) => {
 
 submitDetails = async(e) => {
   e.preventDefault();
-  const data = {
-    username : this.state.username,
-    password : this.state.password,
-    email : this.state.email,
-    colgname : this.state.colgname,
-    editmode : true
-  }
+  // const data = {
+  //   username : this.state.username,
+  //   password : this.state.password,
+  //   email : this.state.email,
+  //   colgname : this.state.colgname,
+  //   editmode : true
+  // }
   
-  if(data.colgname === '') {
+  if(this.state.colgname === '') {
     window.alert("Please enter college name");
     return;
   }
@@ -137,5 +137,5 @@ render() {
         )
     }
 }
-
+// export Student Sign Up Component
 export default graphql(studentSignupMutation, { name: "studentSignupMutation" })(StudentSignUp);
